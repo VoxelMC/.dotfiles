@@ -1,4 +1,10 @@
-# kickstart.nvim
+# VoxelMC's Neovim Configuration
+
+This file contains my personal Neovim configuration. Feel free to use it!
+
+## kickstart.nvim
+
+This configuration file began as it is present in `kickstart.nvim`. This was then adapted to produce my personal Neovim experience!
 
 https://github.com/kdheepak/kickstart.nvim/assets/1813121/f3ff9a2b-c31f-44df-a4fa-8a0d7b17cf7b
 
