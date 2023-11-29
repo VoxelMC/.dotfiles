@@ -52,7 +52,7 @@ set.shiftwidth = 4
 
 vim.wo.relativenumber = true
 
-vim.keymap.set('n', '<leader>fs', vim.cmd.Ex)
+vim.keymap.set('n', '<leader>fs', vim.cmd.Ex, { desc = "Open File System (netrw)" })
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -83,9 +83,19 @@ require('lazy').setup({
     'tpope/vim-rhubarb',
 
     -- Detect tabstop and shiftwidth automatically
-    -- 'tpope/vim-sleuth',
+    'tpope/vim-sleuth',
     'prettier/vim-prettier',
 
+    {
+        'github/copilot.vim',
+        config = function()
+            vim.keymap.set('i', '<C-J>', 'copilot#Accept("<CR>")', {
+                expr = true,
+                replace_keycodes = false
+            })
+            vim.g.copilot_no_tab_map = true
+        end,
+    },
     -- NOTE: This is where your plugins related to LSP can be installed.
     --  The configuration is done below. Search for lspconfig to find it below.
     {
@@ -131,20 +141,80 @@ require('lazy').setup({
         },
     },
 
+    -- Hover Tooltip Plugin
+    {
+        "lewis6991/hover.nvim",
+        config = function()
+            require("hover").setup {
+                init = function()
+                    -- Require providers
+                    require("hover.providers.lsp")
+                    -- require('hover.providers.gh')
+                    -- require('hover.providers.gh_user')
+                    -- require('hover.providers.jira')
+                    -- require('hover.providers.man')
+                    -- require('hover.providers.dictionary')
+                end,
+                preview_opts = {
+                    border = 'single'
+                },
+                -- Whether the contents of a currently open hover window should be moved
+                -- to a :h preview-window when pressing the hover keymap.
+                preview_window = false,
+                title = true,
+                mouse_providers = {
+                    'LSP'
+                },
+                mouse_delay = 1000
+            }
+            -- vim.keymap.del("n", "H")
+            -- Setup keymaps
+            vim.keymap.set("n", "H", require("hover").hover, { desc = "hover.nvim" })
+            vim.keymap.set("n", "gH", require("hover").hover_select, { desc = "hover.nvim (select)" })
+
+            -- Mouse support
+            -- vim.keymap.set('n', '<MouseMove>', require('hover').hover_mouse, { desc = "hover.nvim (mouse)" })
+            -- vim.o.mousemoveevent = true
+        end
+    },
+
+    -- Autoclose Plugin
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        opts = {},
+        config = function()
+            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+            local cmp = require('cmp')
+            cmp.event:on(
+                'confirm_done',
+                cmp_autopairs.on_confirm_done()
+            )
+        end,
+        dependencies = {
+            'hrsh7th/nvim-cmp',
+        },
+    },
+
     -- Useful plugin to show you pending keybinds.
-    { 'folke/which-key.nvim', opts = {} },
+    { 'folke/which-key.nvim',  opts = {} },
     {
         'theprimeagen/harpoon',
         config = function()
             local mark = require("harpoon.mark")
             local ui = require("harpoon.ui")
-            vim.keymap.set("n", "<leader>a", mark.add_file)
-            vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
+            vim.keymap.set("n", "<leader>fa", mark.add_file, { desc = "Add [A] file to Harpoon" })
+            vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon [E]xplorer" })
+            vim.keymap.set("n", "<leader>fl", ui.toggle_quick_menu, { desc = "Toggle Harpoon [L]ist" })
 
-            vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end)
-            vim.keymap.set("n", "<C-s>", function() ui.nav_file(2) end)
-            vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end)
-            vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end)
+            vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
+            vim.keymap.set("n", "<C-s>", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
+            vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
+            vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
+            vim.keymap.set("n", "<leader>o1", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
+            vim.keymap.set("n", "<leader>o2", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
+            vim.keymap.set("n", "<leader>o3", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
+            vim.keymap.set("n", "<leader>o4", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
         end,
     },
     {
@@ -160,7 +230,8 @@ require('lazy').setup({
                 changedelete = { text = '~' },
             },
             on_attach = function(bufnr)
-                vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk, { buffer = bufnr, desc = 'Preview git hunk' })
+                vim.keymap.set('n', '<leader>hp', require('gitsigns').preview_hunk,
+                    { buffer = bufnr, desc = 'Preview git hunk' })
 
                 -- don't override the built-in and fugitive keymaps
                 local gs = package.loaded.gitsigns
@@ -250,6 +321,13 @@ require('lazy').setup({
         build = ':TSUpdate',
     },
 
+   --  {
+   --      'windwp/nvim-ts-autotag',
+   --      config = {
+   --          require('nvim-ts-autotag').setup()
+   --      },
+   --  },
+
     -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
     --       These are some example plugins that I've included in the kickstart repository.
     --       Uncomment any of the lines below to enable them.
@@ -269,6 +347,11 @@ require('lazy').setup({
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
+require'nvim-treesitter.configs'.setup {
+  autotag = {
+    enable = true,
+  }
+}
 -- Set highlight on search
 vim.o.hlsearch = false
 
@@ -378,7 +461,7 @@ local function live_grep_git_root()
     local git_root = find_git_root()
     if git_root then
         require('telescope.builtin').live_grep({
-            search_dirs = {git_root},
+            search_dirs = { git_root },
         })
     end
 end
@@ -524,10 +607,12 @@ require('which-key').register {
     ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
     ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
     ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-    ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
+    -- ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
     ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
     ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
     ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+    ['<leader>f'] = { name = '[F]ile Management', _ = 'which_key_ignore' },
+    ['<leader>o'] = { name = '[O]pen', _ = 'which_key_ignore' },
 }
 
 -- mason-lspconfig requires that these setup functions are called in this order
