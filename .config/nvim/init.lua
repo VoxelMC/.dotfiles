@@ -183,14 +183,6 @@ require('lazy').setup({
         'windwp/nvim-autopairs',
         event = "InsertEnter",
         opts = {},
-        config = function()
-            local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-            local cmp = require('cmp')
-            cmp.event:on(
-                'confirm_done',
-                cmp_autopairs.on_confirm_done()
-            )
-        end,
         dependencies = {
             'hrsh7th/nvim-cmp',
         },
@@ -209,8 +201,8 @@ require('lazy').setup({
 
             vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
             vim.keymap.set("n", "<C-s>", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
-            vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
-            vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
+            -- vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
+            -- vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
             vim.keymap.set("n", "<leader>o1", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
             vim.keymap.set("n", "<leader>o2", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
             vim.keymap.set("n", "<leader>o3", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
@@ -321,12 +313,12 @@ require('lazy').setup({
         build = ':TSUpdate',
     },
 
-   --  {
-   --      'windwp/nvim-ts-autotag',
-   --      config = {
-   --          require('nvim-ts-autotag').setup()
-   --      },
-   --  },
+    --  {
+    --      'windwp/nvim-ts-autotag',
+    --      config = {
+    --          require('nvim-ts-autotag').setup()
+    --      },
+    --  },
 
     -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
     --       These are some example plugins that I've included in the kickstart repository.
@@ -347,10 +339,17 @@ require('lazy').setup({
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
-require'nvim-treesitter.configs'.setup {
-  autotag = {
-    enable = true,
-  }
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on(
+    'confirm_done',
+    cmp_autopairs.on_confirm_done()
+)
+
+require 'nvim-treesitter.configs'.setup {
+    autotag = {
+        enable = true,
+    }
 }
 -- Set highlight on search
 vim.o.hlsearch = false
