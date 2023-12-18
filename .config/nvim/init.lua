@@ -261,7 +261,7 @@ require('lazy').setup({
                 add = { text = '+' },
                 change = { text = '~' },
                 delete = { text = '_' },
-                topdelete = { text = '‾' },
+                topdelete = { text = '^' },
                 changedelete = { text = '~' },
             },
             on_attach = function(bufnr)
