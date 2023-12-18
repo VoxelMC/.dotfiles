@@ -1,4 +1,5 @@
 --[[
+-- TODO: Test
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -27,11 +28,6 @@ Kickstart Guide:
 I have left several `:help X` comments throughout the init.lua
 You should run that command and read that help section for more information.
 
-In addition, I have some `NOTE:` items throughout the file.
-These are for you, the reader to help understand what is happening. Feel free to delete
-them once you know what you're doing, but they should serve as a guide for when you
-are first encountering a few different constructs in your nvim config.
-
 I hope you enjoy your Neovim journey,
 - TJ
 
@@ -44,11 +40,11 @@ P.S. You can delete this when you're done too. It's your config now :)
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-local set = vim.opt
+local setopt = vim.opt
 
-set.tabstop = 4
-set.softtabstop = 4
-set.shiftwidth = 4
+setopt.tabstop = 4
+setopt.softtabstop = 4
+setopt.shiftwidth = 4
 
 vim.wo.relativenumber = true
 
@@ -83,13 +79,13 @@ require('lazy').setup({
     'tpope/vim-rhubarb',
 
     -- Detect tabstop and shiftwidth automatically
-    'tpope/vim-sleuth',
+    -- 'tpope/vim-sleuth',
     'prettier/vim-prettier',
-
+    'chrisbra/Colorizer',
     {
         'github/copilot.vim',
         config = function()
-            vim.keymap.set('i', '<C-J>', 'copilot#Accept("<CR>")', {
+            vim.keymap.set('i', '<C-G>', 'copilot#Accept("<CR>")', {
                 expr = true,
                 replace_keycodes = false
             })
@@ -101,6 +97,10 @@ require('lazy').setup({
     {
         -- LSP Configuration & Plugins
         'neovim/nvim-lspconfig',
+        config = function()
+            require('lspconfig').rust_analyzer.setup{}
+
+        end,
         dependencies = {
             -- Automatically install LSPs to stdpath for neovim
             'williamboman/mason.nvim',
@@ -188,8 +188,47 @@ require('lazy').setup({
         },
     },
 
+    {
+        'kaarmu/typst.vim',
+        ft = 'typst',
+        lazy = false,
+    },
+
     -- Useful plugin to show you pending keybinds.
+    -- FOLKE
     { 'folke/which-key.nvim',  opts = {} },
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {
+            --
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        },
+        config = function()
+            vim.keymap.set("n", "<leader>lp", "<cmd>Trouble workspace_diagnostics<cr>",
+                { desc = "[L]ist [P]roblems" })
+        end,
+    },
+    {
+        "folke/todo-comments.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("todo-comments").setup()
+
+            vim.keymap.set("n", "]t", function()
+                require("todo-comments").jump_next()
+            end, { desc = "Next todo comment" })
+
+            vim.keymap.set("n", "[t", function()
+                require("todo-comments").jump_prev()
+            end, { desc = "Previous todo comment" })
+
+            vim.keymap.set("n", "<leader>lt", "<cmd>TodoTrouble<cr>", { desc = "[L]ook at [t]odos" })
+            vim.keymap.set("n", "<leader>lT", "<cmd>TodoTelescope<cr>", { desc = "[L]ook at todos using [T]elescope" })
+        end
+    },
     {
         'theprimeagen/harpoon',
         config = function()
@@ -199,8 +238,12 @@ require('lazy').setup({
             vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon [E]xplorer" })
             vim.keymap.set("n", "<leader>fl", ui.toggle_quick_menu, { desc = "Toggle Harpoon [L]ist" })
 
-            vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
-            vim.keymap.set("n", "<C-s>", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
+            vim.keymap.set("n", "<C-1>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
+            vim.keymap.set("n", "<C-2>", function() ui.nav_file(2) end, { desc = "Open Second Harpooned File" })
+            vim.keymap.set("n", "<C-3>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
+            vim.keymap.set("n", "<C-4>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
+
+            -- vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
             -- vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
             -- vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
             vim.keymap.set("n", "<leader>o1", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
@@ -389,6 +432,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 -- [[ Basic Keymaps ]]
+-- CUSTOM KEYMAPS
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -486,6 +530,7 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sG', ':LiveGrepGitRoot<cr>', { desc = '[S]earch by [G]rep on Git Root' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+vim.keymap.set('n', '<leader>v', '"+p', { desc = 'Paste from clipboard' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -612,6 +657,7 @@ require('which-key').register {
     ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
     ['<leader>f'] = { name = '[F]ile Management', _ = 'which_key_ignore' },
     ['<leader>o'] = { name = '[O]pen', _ = 'which_key_ignore' },
+    ['<leader>l'] = { name = '[L]ook', _ = 'which_key_ignore' }
 }
 
 -- mason-lspconfig requires that these setup functions are called in this order
