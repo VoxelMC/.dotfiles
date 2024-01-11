@@ -3,12 +3,18 @@ Jan 10, 2023
 - Add some packages
     - Typst file formatting and LSP
     - Autoformatting (`conform.nvim`)
+    - Harpoon
 - Made `<leader>fs` better (bound to `:Rex` with `:Ex` fallback)
     - also bound `-` to the same ^
 - Fixed relative and absolute line numbers
     - also added line numbers to `netrw`
 - New keymaps
     - `Shift + Backspace`: Delete whole word;
+    - `-`: Open netrw;
+    - `gcc`: Comment current line (insert);
+    - `gc`: Comment selected line(s) (visual);
+    - `<leader>fa`: Add file to Harpoon
+    - `<leader>fl`: View Harpooned files
 
 
 # kickstart.nvim
