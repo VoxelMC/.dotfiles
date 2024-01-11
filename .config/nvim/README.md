@@ -1,10 +1,17 @@
-# VoxelMC's Neovim Configuration
+# Updates
+Jan 10, 2023
+- Add some packages
+    - Typst file formatting and LSP
+    - Autoformatting (`conform.nvim`)
+- Made `<leader>fs` better (bound to `:Rex` with `:Ex` fallback)
+    - also bound `-` to the same ^
+- Fixed relative and absolute line numbers
+    - also added line numbers to `netrw`
+- New keymaps
+    - `Shift + Backspace`: Delete whole word;
 
-This file contains my personal Neovim configuration. Feel free to use it!
 
-## kickstart.nvim
-
-This configuration file began as it is present in `kickstart.nvim`. This was then adapted to produce my personal Neovim experience!
+# kickstart.nvim
 
 https://github.com/kdheepak/kickstart.nvim/assets/1813121/f3ff9a2b-c31f-44df-a4fa-8a0d7b17cf7b
 
