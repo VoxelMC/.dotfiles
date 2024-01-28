@@ -271,3 +271,8 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# wezterm
+PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
+export PATH
+# wezterm end
