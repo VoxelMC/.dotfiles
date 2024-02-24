@@ -65,8 +65,9 @@ function godev() {
 }
 source ~/.zsh_scripts/godev_completion.sh
 
+eval "$(zoxide init zsh)"
 function cdls() {
-	cd $1
+	z $1
 	ls
 }
 
@@ -120,6 +121,8 @@ alias editautocomplete="nvim '$(espanso path config)'"
 
 alias t="tree -L"
 
+alias partykit="pnpm partykit"
+
 # alias chmod commands
 alias mx='chmod a+x'
 alias 000='chmod -R 000'
@@ -147,6 +150,8 @@ alias initvenv="python3 -m venv venv; chmod +x venv/bin/activate; source venv/bi
 alias activatevenv="source venv/bin/activate"
 
 alias nmr="ssh -Y pshipley@nmr400.ok.ubc.ca"
+alias svr="ssh -Y tfox@10.0.0.136"
+
 alias s="grep"
 
 # alias gh="gh --limit 1000"
@@ -276,3 +281,7 @@ esac
 PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
 export PATH
 # wezterm end
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+PATH=~/.console-ninja/.bin:$PATH

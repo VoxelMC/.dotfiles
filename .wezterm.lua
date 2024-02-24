@@ -10,6 +10,7 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
+config.default_cwd = 'Users/tfox/Dev'
 -- This is where you actually apply your config choices
 wezterm.on('gui-attached', function(domain)
 	-- maximize all displayed windows on startup
@@ -40,11 +41,19 @@ config.native_macos_fullscreen_mode = true
 config.color_scheme = 'Tokyo Night'
 -- config.color_scheme = 'Tokyo Night (Gogh)'
 
+-- config.default_cursor_style = "BlinkingUnderline"
+config.default_cursor_style = "SteadyUnderline"
+config.animation_fps = 1
+config.cursor_blink_ease_in = 'Constant'
+config.cursor_blink_ease_out = 'Constant'
+config.cursor_thickness = 2
+
 -- config.font = wezterm.font "Monaspace Neon"
 -- config.harfbuzz_features = {
 -- 	'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'
 -- }
 
+-- config.dpi = 152
 
 config.keys = {
 	-- Turn off the default CMD-m Hide action, allowing CMD-m to
@@ -85,7 +94,8 @@ config.hide_tab_bar_if_only_one_tab = false
 
 config.colors = {
 	tab_bar = {
-		background = "#1a1b26",
+		-- background = "#1a1b26",
+		background = "transparent",
 		new_tab = {
 			bg_color = '#302042',
 			fg_color = '#FFFFFF',
@@ -131,8 +141,11 @@ end
 wezterm.on(
 	'format-tab-title',
 	function(tab, tabs, panes, cfg, hover, max_width)
-		local edge_background = '#1a1b26'
-		local background = '#3b2042'
+		-- local edge_background = '#1a1b26'
+		local edge_background = 'transparent'
+		-- local background = '#3b2042'
+		local background = 'transparent'
+		-- local foreground = '#DDDDDD'
 		local foreground = '#DDDDDD'
 
 		if tab.is_active then
@@ -145,28 +158,47 @@ wezterm.on(
 			foreground = '#EEEEEE'
 		end
 
-		local edge_foreground = background
+		-- local edge_foreground = background
+		local edge_foreground = '#FFFFFF'
 
 		local title = Tab_Title(tab)
 
 		-- ensure that the titles fit in the available space,
 		-- and that we have room for the edges.
+		-- title = "  " .. title .. "  "
 		title = "  " .. title .. "  "
 		-- title = wezterm.truncate_right(title, max_width - 2)
 
 		return {
 			{ Background = { Color = edge_background } },
 			{ Foreground = { Color = edge_foreground } },
-			{ Text = SOLID_LEFT_ARROW },
+			{ Text = "" },
+			-- { Text = SOLID_LEFT_ARROW },
 			{ Background = { Color = background } },
 			{ Foreground = { Color = foreground } },
 			{ Text = title },
 			{ Background = { Color = edge_background } },
 			{ Foreground = { Color = edge_foreground } },
-			{ Text = SOLID_RIGHT_ARROW .. " " },
+			{ Text = "" },
+			-- { Text = SOLID_RIGHT_ARROW .. " " },
 		}
 	end
 )
 
+config.background = {
+	{
+		source = {
+			-- File = '/Users/tfox/Downloads/Dark Background Levi Frey.jpg'
+			-- File = '/Users/tfox/Downloads/Annie Spratt Dark Background.jpg'
+			-- File = '/Users/tfox/Downloads/Dark Background Shyam.jpg'
+			-- File = '/Users/tfox/Downloads/Dark Background Annie Spratt.jpg'
+			-- File = '/Users/tfox/Downloads/Dark Background Evgeni Evgeniev.jpg'
+			File = '/Users/tfox/Downloads/fireplace.gif'
+		},
+		vertical_align = "Middle",
+		attachment = "Fixed",
+		hsb = { brightness = 0.04 }
+	}
+}
 -- and finally, return the configuration to wezterm
 return config
