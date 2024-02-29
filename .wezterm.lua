@@ -190,10 +190,10 @@ config.background = {
 		source = {
 			-- File = '/Users/tfox/Downloads/Dark Background Levi Frey.jpg'
 			-- File = '/Users/tfox/Downloads/Annie Spratt Dark Background.jpg'
-			-- File = '/Users/tfox/Downloads/Dark Background Shyam.jpg'
+			File = '/Users/tfox/Downloads/Dark Background Shyam.jpg'
 			-- File = '/Users/tfox/Downloads/Dark Background Annie Spratt.jpg'
 			-- File = '/Users/tfox/Downloads/Dark Background Evgeni Evgeniev.jpg'
-			File = '/Users/tfox/Downloads/fireplace.gif'
+			-- File = '/Users/tfox/Downloads/fireplace.gif'
 		},
 		vertical_align = "Middle",
 		attachment = "Fixed",

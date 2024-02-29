@@ -151,6 +151,7 @@ alias activatevenv="source venv/bin/activate"
 
 alias nmr="ssh -Y pshipley@nmr400.ok.ubc.ca"
 alias svr="ssh -Y tfox@10.0.0.136"
+alias pc="ssh tfox@10.0.0.198"
 
 alias s="grep"
 
