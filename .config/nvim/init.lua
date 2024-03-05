@@ -180,9 +180,14 @@ require("lazy").setup({
         -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
         config = function()
+            local util = require 'lspconfig.util'
+            local function get_typescript_server_path(root_dir)
+                local project_root = util.find_node_modules_ancestor(root_dir)
+                return project_root and (util.path.join(project_root, 'node_modules', 'typescript', 'lib')) or
+                    ''
+            end
             require("lspconfig").rust_analyzer.setup({})
             require("lspconfig").pyright.setup({})
-            require("lspconfig").astro.setup({})
             require("lspconfig").astro.setup({})
 
             require("lspconfig").grammarly.setup {
@@ -885,6 +890,7 @@ local servers = {
     -- rust_analyzer = {},
     -- tsserver = {},
     -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+    -- mdx_analyzer = { filetypes = { 'mdx', 'markdown' } },
 
     lua_ls = {
         Lua = {
