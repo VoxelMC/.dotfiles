@@ -86,14 +86,15 @@ vim.keymap.set("i", "<S-BS>", "<C-w>", { desc = "Delete previous word" })
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     pattern = { "*" },
     callback = function()
-        if vim.fn.exists(":Rex") > 0 then
-            -- Open netrw in pane
-            vim.keymap.set("n", "<leader>fs", vim.cmd.Rex, { desc = "Open File System (netrw)" })
-            vim.keymap.set("n", "-", vim.cmd.Rex, { desc = "Open file system (netrw)" })
-        else
-            vim.keymap.set("n", "<leader>fs", vim.cmd.Ex, { desc = "Open File System (netrw)" })
-            vim.keymap.set("n", "-", vim.cmd.Ex, { desc = "Open file system (netrw)" })
-        end
+        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        -- if vim.fn.exists(":Rex") > 0 then
+        --     -- Open netrw in pane
+        --     vim.keymap.set("n", "<leader>fs", vim.cmd.Rex, { desc = "Open File System (netrw)" })
+        --     vim.keymap.set("n", "-", vim.cmd.Rex, { desc = "Open file system (netrw)" })
+        -- else
+        --     vim.keymap.set("n", "<leader>fs", vim.cmd.Ex, { desc = "Open File System (netrw)" })
+        --     vim.keymap.set("n", "-", vim.cmd.Ex, { desc = "Open file system (netrw)" })
+        -- end
     end,
 })
 
@@ -137,6 +138,13 @@ require("lazy").setup({
     --         -- vim.cmd([[let g:astro_stylus = 'enable']])
     --     end
     -- },
+
+    {
+        'stevearc/oil.nvim',
+        opts = {},
+        -- Optional dependencies
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+    },
 
     -- Git related plugins
     "tpope/vim-fugitive",
@@ -570,6 +578,20 @@ require("nvim-treesitter.configs").setup({
         enable = true,
     },
 })
+
+-- Configure oil.nvim
+require("oil").setup({
+    skip_confirm_for_simple_edits = false,
+    view_options = {
+        -- Show files and directories that start with "."
+        show_hidden = true,
+        -- This function defines what is considered a "hidden" file
+        is_hidden_file = function(name, bufnr)
+            return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
+        end,
+    }
+})
+
 -- Set highlight on search
 vim.o.hlsearch = false
 
