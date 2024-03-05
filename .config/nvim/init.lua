@@ -334,6 +334,21 @@ require("lazy").setup({
     -- FOLKE
     { "folke/which-key.nvim",  opts = {} },
     {
+        "folke/zen-mode.nvim",
+        opts = {
+            window = {
+                width = .60
+            },
+            plugins = {
+                gitsigns = { enabled = true },
+                wezterm = {
+                    enable = true,
+                    font = "+2"
+                }
+            }
+        }
+    },
+    {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         -- opts = {
