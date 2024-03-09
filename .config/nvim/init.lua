@@ -7,6 +7,8 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
+--
+-- todo( asd
 
 function split(pString, pPattern)
     local Table = {} -- NOTE: use {n = 0} in Lua-5.0
@@ -151,6 +153,7 @@ require("lazy").setup({
     "tpope/vim-rhubarb",
     -- {
     "tpope/vim-commentary",
+    "tpope/vim-surround",
     --     config = function()
     --     end,
     -- },
@@ -373,7 +376,26 @@ require("lazy").setup({
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "folke/trouble.nvim" },
         config = function()
-            require("todo-comments").setup()
+            require("todo-comments").setup({
+                keywords = {
+                    FIX = {
+                        icon = " ", -- icon used for the sign, and in search results
+                        color = "error", -- can be a hex color, or a named color (see below)
+                        alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+                        -- signs = false, -- configure signs for some keywords individually
+                    },
+                    TODO = { icon = " ", color = "info", alt = { "todo", "!todo" } },
+                    HACK = { icon = " ", color = "warning" },
+                    WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+                    PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+                    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+                    TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+                },
+                search = {
+                    -- todo asd
+                    pattern = [[\b(KEYWORDS)]]
+                }
+            })
 
             vim.keymap.set("n", "]t", function()
                 require("todo-comments").jump_next()
@@ -393,6 +415,7 @@ require("lazy").setup({
             local mark = require("harpoon.mark")
             local ui = require("harpoon.ui")
             vim.keymap.set("n", "<leader>fa", mark.add_file, { desc = "Add [A] file to Harpoon" })
+            vim.keymap.set("n", "<C-a>", mark.add_file, { desc = "Add [A] file to Harpoon" })
             vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon [E]xplorer" })
             vim.keymap.set("n", "<leader>fl", ui.toggle_quick_menu, { desc = "Toggle Harpoon [L]ist" })
 
@@ -473,6 +496,16 @@ require("lazy").setup({
         "catppuccin/nvim",
         name = "catppuccin",
         priority = 1000
+    },
+    {
+        "rebelot/kanagawa.nvim",
+        name = "kanagawa",
+        priority = 1000
+    },
+    {
+        'kepano/flexoki-neovim',
+        name = 'flexoki',
+        priority = 1001
     },
     {
         -- Theme inspired by Atom
