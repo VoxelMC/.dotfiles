@@ -622,8 +622,18 @@ require("oil").setup({
         is_hidden_file = function(name, bufnr)
             return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
         end,
-    }
+    },
 })
+require("nvim-web-devicons").setup {
+    strict = true,
+    override_by_extension = {
+        ["astro"] = {
+            icon = "",
+            color = "#f1502f",
+            name = "Astro",
+        },
+    },
+}
 
 -- Set highlight on search
 vim.o.hlsearch = false
