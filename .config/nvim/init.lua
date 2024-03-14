@@ -4,31 +4,7 @@
 -- To define custom keybinds, search for "Custom Keybinds" in this file.
 --]]
 
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
---
--- todo( asd
-
-function split(pString, pPattern)
-    local Table = {} -- NOTE: use {n = 0} in Lua-5.0
-    local fpat = "(.-)" .. pPattern
-    local last_end = 1
-    local s, e, cap = pString:find(fpat, 1)
-    while s do
-        if s ~= 1 or cap ~= "" then
-            table.insert(Table, cap)
-        end
-        last_end = e + 1
-        s, e, cap = pString:find(fpat, last_end)
-    end
-    if last_end <= #pString then
-        cap = pString:sub(last_end)
-        table.insert(Table, cap)
-    end
-    return Table
-end
-
+--  NOTE: This must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 local setopt = vim.opt
@@ -36,17 +12,22 @@ local setopt = vim.opt
 -- Cast a magic spell to add relative line numbers to Netrw
 vim.cmd([[let g:netrw_bufsettings="noma nomod nu nobl nowrap ro rnu"]])
 
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-    command = "highlight Normal guibg=NONE ctermbg=NONE"
-})
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-    command = "highlight SignColumn guibg=NONE ctermbg=NONE"
-})
--- Do the above green and below red!!
-vim.api.nvim_create_autocmd({ "VimEnter" }, {
-    -- command = "highlight LineNr guifg=#CCCCCC ctermfg=#FFFFFF"
-    command = "highlight LineNr guifg=#CCCCCC"
-})
+local transparent = false;
+
+if transparent then
+    vim.api.nvim_create_autocmd({ "VimEnter" }, {
+        command = "highlight Normal guibg=NONE ctermbg=NONE"
+    })
+    vim.api.nvim_create_autocmd({ "VimEnter" }, {
+        command = "highlight SignColumn guibg=NONE ctermbg=NONE"
+    })
+    -- Do the above green and below red!!
+    vim.api.nvim_create_autocmd({ "VimEnter" }, {
+        -- command = "highlight LineNr guifg=#CCCCCC ctermfg=#FFFFFF"
+        command = "highlight LineNr guifg=#CCCCCC"
+    })
+end
+
 
 vim.api.nvim_create_autocmd({ "VimLeave" }, {
     command = "silent !wezterm cli set-tab-title $(basename \"$PWD\")"
@@ -76,19 +57,25 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 
 -- Add line-moving to Ctrl-J and Ctrl-K
-vim.keymap.set("n", "<C-j>", ":m- <CR>==", { desc = "Move line down 1" })
-vim.keymap.set("n", "<C-k>", ":m+ <CR>==", { desc = "Move line up 1" })
-vim.keymap.set("v", "<A-j>", ":m '>-1<CR>gv=gv", { desc = "Move line(s) down 1" })
-vim.keymap.set("v", "<A-k>", ":m '>+1<CR>gv=gv", { desc = "Move line(s) up 1" })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line down 1" })
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line up 1" })
+-- Previous attempts: kept here for old times sake ;)
+-- vim.keymap.set("n", "<C-J>", ":m- <CR>==", { desc = "Move line down 1" })
+-- vim.keymap.set("n", "<C-K>", ":m+ <CR>==", { desc = "Move line up 1" })
+-- vim.keymap.set("v", "<A-j>", ":m '>-1<CR>gv=gv", { desc = "Move line(s) down 1" })
+-- vim.keymap.set("v", "<A-k>", ":m '>+1<CR>gv=gv", { desc = "Move line(s) up 1" })
 
 -- Toggle Trouble
 vim.keymap.set("n", "<C-p>", ":TroubleToggle<CR>", { desc = "Toggle Trouble" })
+
+-- Custom backspace bind to delete whole words.
 vim.keymap.set("i", "<S-BS>", "<C-w>", { desc = "Delete previous word" })
 
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     pattern = { "*" },
     callback = function()
         vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        -- No longer needed, but will keep in case I go back to Netrw from Oil
         -- if vim.fn.exists(":Rex") > 0 then
         --     -- Open netrw in pane
         --     vim.keymap.set("n", "<leader>fs", vim.cmd.Rex, { desc = "Open File System (netrw)" })
@@ -102,6 +89,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 
 vim.keymap.set("n", "q:", ":q<CR>")
 
+-- Command to turn on or off centering to the cursor.
 vim.api.nvim_create_user_command("CenterOn", function() vim.cmd([[:setlocal scrolloff=999]]) end,
     { desc = "Enable cursor center on screen" })
 vim.api.nvim_create_user_command("CenterOff", function() vim.cmd([[:setlocal scrolloff=-1]]) end,
@@ -133,6 +121,7 @@ require("lazy").setup({
             vim.cmd("let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.astro'")
         end,
     },
+    -- I do not remember what this is...
     -- {
     --     'wuelnerdotexe/vim-astro',
     --     config = function()
@@ -151,55 +140,73 @@ require("lazy").setup({
     -- Git related plugins
     "tpope/vim-fugitive",
     "tpope/vim-rhubarb",
-    -- {
     "tpope/vim-commentary",
     "tpope/vim-surround",
-    --     config = function()
-    --     end,
-    -- },
+    -- Eh...
+    -- 'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-    -- Detect tabstop and shiftwidth automatically
-    -- 'tpope/vim-sleuth',
-    -- {
-    --     'yardnsm/vim-import-cost',
-    --     build = "pnpm install",
-    -- },
+    -- Pretty registers window instead of boring other one.
+    {
+        "tversteeg/registers.nvim",
+        cmd = "Registers",
+        config = true,
+        keys = {
+            { "\"",    mode = { "n", "v" } },
+            { "<C-R>", mode = "i" }
+        },
+        name = "registers",
+    },
+
+    -- Idek if this works, but there are probably commands to test this.
     {
         "barrett-ruth/import-cost.nvim",
         build = "sh install.sh npm",
-        -- if on windows
-        -- build = 'pwsh install.ps1 yarn',
         config = true,
     },
 
+    -- Idk what this is but it seems important for later...
     -- 'sheerun/vim-polyglot',
     "prettier/vim-prettier",
+
+    -- Enables a command to show all colour strings like this #42069F with a colour hint
+    -- :ColorToggle
     "chrisbra/Colorizer",
-    {
-        "github/copilot.vim",
-        config = function()
-            vim.keymap.set("i", "<C-G>", 'copilot#Accept("<CR>")', {
-                expr = true,
-                replace_keycodes = false,
-            })
-            vim.g.copilot_no_tab_map = true
-        end,
-    },
+
+    -- NOTE: COPILOT DISABLED UNTIL I GET MY SUBSCRIPTION AGAIN...
+    -- {
+    --     "github/copilot.vim",
+    --     config = function()
+    --         vim.keymap.set("i", "<C-G>", 'copilot#Accept("<CR>")', {
+    --             expr = true,
+    --             replace_keycodes = false,
+    --         })
+    --         vim.g.copilot_no_tab_map = true
+    --     end,
+    -- },
+
     -- NOTE: This is where your plugins related to LSP can be installed.
     --  The configuration is done below. Search for lspconfig to find it below.
     {
         -- LSP Configuration & Plugins
         "neovim/nvim-lspconfig",
+        ---@class PluginLspOpts
+        opts = {
+            servers = {
+                gleam = { mason = false },
+            }
+        },
         config = function()
-            local util = require 'lspconfig.util'
-            local function get_typescript_server_path(root_dir)
-                local project_root = util.find_node_modules_ancestor(root_dir)
-                return project_root and (util.path.join(project_root, 'node_modules', 'typescript', 'lib')) or
-                    ''
-            end
+            -- local util = require 'lspconfig.util'
+            -- local function get_typescript_server_path(root_dir)
+            --     local project_root = util.find_node_modules_ancestor(root_dir)
+            --     return project_root and (util.path.join(project_root, 'node_modules', 'typescript', 'lib')) or
+            --         ''
+            -- end
+
             require("lspconfig").rust_analyzer.setup({})
             require("lspconfig").pyright.setup({})
             require("lspconfig").astro.setup({})
+            require("lspconfig").gleam.setup({})
 
             require("lspconfig").grammarly.setup {
                 -- on_attach = on_attach,
@@ -217,6 +224,7 @@ require("lazy").setup({
             { "j-hui/fidget.nvim", tag = "legacy", opts = {} },
 
             -- Additional lua configuration, makes nvim stuff amazing!
+            -- NOTE: Maybe check this out a bit more...
             "folke/neodev.nvim",
         },
     },
@@ -266,7 +274,6 @@ require("lazy").setup({
                 },
                 mouse_delay = 1000,
             })
-            -- vim.keymap.del("n", "H")
             -- Setup keymaps
             vim.keymap.set("n", "H", require("hover").hover, { desc = "hover.nvim" })
             vim.keymap.set("n", "gH", require("hover").hover_select, { desc = "hover.nvim (select)" })
@@ -287,11 +294,6 @@ require("lazy").setup({
         },
     },
 
-    -- {
-    --     'kaarmu/typst.vim',
-    --     ft = 'typst',
-    --     lazy = false,
-    -- },
     'NoahTheDuke/vim-just',
     {
         "stevearc/conform.nvim",
@@ -312,11 +314,8 @@ require("lazy").setup({
                 typescript = { "prettier" },
             },
         },
-        -- config = function()
-        --     require("conform").setup({
-        --     })
-        -- end,
     },
+    'gleam-lang/gleam.vim',
     {
         "chomosuke/typst-preview.nvim",
         lazy = true,
@@ -330,20 +329,10 @@ require("lazy").setup({
             require("typst-preview").update()
         end,
     },
-    -- Use this when IT WORKS
-    -- {
-    --     'chomosuke/typst-preview.nvim',
-    --     ft = 'typst',
-    --     lazy = false,
-    --     version = '0.1.*',
-    --     build = function()
-    --         require 'typst-preview'.update()
-    --     end,
-    -- },
 
     -- Useful plugin to show you pending keybinds.
     -- FOLKE
-    { "folke/which-key.nvim",  opts = {} },
+    { "folke/which-key.nvim",    opts = {} },
     {
         "folke/zen-mode.nvim",
         opts = {
@@ -415,7 +404,7 @@ require("lazy").setup({
             local mark = require("harpoon.mark")
             local ui = require("harpoon.ui")
             vim.keymap.set("n", "<leader>fa", mark.add_file, { desc = "Add [A] file to Harpoon" })
-            vim.keymap.set("n", "<C-a>", mark.add_file, { desc = "Add [A] file to Harpoon" })
+            -- vim.keymap.set("n", "<C-A>", mark.add_file, { desc = "Add [A] file to Harpoon" })
             vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Toggle Harpoon [E]xplorer" })
             vim.keymap.set("n", "<leader>fl", ui.toggle_quick_menu, { desc = "Toggle Harpoon [L]ist" })
 
@@ -432,9 +421,6 @@ require("lazy").setup({
                 ui.nav_file(4)
             end, { desc = "Open Fourth Harpooned File" })
 
-            -- vim.keymap.set("n", "<C-a>", function() ui.nav_file(1) end, { desc = "Open First Harpooned File" })
-            -- vim.keymap.set("n", "<C-d>", function() ui.nav_file(3) end, { desc = "Open Third Harpooned File" })
-            -- vim.keymap.set("n", "<C-f>", function() ui.nav_file(4) end, { desc = "Open Fourth Harpooned File" })
             vim.keymap.set("n", "<leader>o1", function()
                 ui.nav_file(1)
             end, { desc = "Open First Harpooned File" })
@@ -507,13 +493,15 @@ require("lazy").setup({
         name = 'flexoki',
         priority = 1001
     },
+    { "fffnite/gleam-theme-nvim" },
     {
         -- Theme inspired by Atom
         "folke/tokyonight.nvim",
         priority = 1000,
         config = function()
             -- vim.cmd.colorscheme 'tokyonight-moon'
-            vim.cmd([[:colorscheme tokyonight-moon]])
+            -- vim.cmd([[:colorscheme tokyonight-moon]])
+            vim.cmd([[:colorscheme flexoki-dark]])
         end,
     },
     "yorickpeterse/vim-paper",
@@ -619,7 +607,7 @@ require("oil").setup({
         -- Show files and directories that start with "."
         show_hidden = true,
         -- This function defines what is considered a "hidden" file
-        is_hidden_file = function(name, bufnr)
+        is_hidden_file = function(name)
             return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
         end,
     },
@@ -631,6 +619,11 @@ require("nvim-web-devicons").setup {
             icon = "",
             color = "#f1502f",
             name = "Astro",
+        },
+        ["gleam"] = {
+            icon = "",
+            color = "#ffaef3",
+            name = "Gleam",
         },
     },
 }
@@ -810,7 +803,8 @@ vim.defer_fn(function()
             "vimdoc",
             "vim",
             "bash",
-            "markdown"
+            "markdown",
+            "gleam"
         },
 
         -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
