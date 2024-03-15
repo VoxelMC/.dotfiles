@@ -495,6 +495,14 @@ require("lazy").setup({
     },
     { "fffnite/gleam-theme-nvim" },
     {
+        'AlexvZyl/nordic.nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require 'nordic'.load()
+        end
+    },
+    {
         -- Theme inspired by Atom
         "folke/tokyonight.nvim",
         priority = 1000,
@@ -624,6 +632,11 @@ require("nvim-web-devicons").setup {
             icon = "",
             color = "#ffaef3",
             name = "Gleam",
+        },
+        ["typ"] = {
+            icon = "t",
+            color = "#239dad",
+            name = "Typst",
         },
     },
 }
