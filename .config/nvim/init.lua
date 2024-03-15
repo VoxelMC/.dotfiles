@@ -56,12 +56,12 @@ setopt.shiftwidth = 4
 vim.wo.number = true
 vim.wo.relativenumber = true
 
--- Add line-moving to Ctrl-J and Ctrl-K
+-- Add line-moving to Shift-J and Shift-K during VISUAL mode
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line down 1" })
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move line up 1" })
+-- vim.keymap.set("n", "<C-K>", ":m+ <CR>==", { desc = "Move line up 1" })
 -- Previous attempts: kept here for old times sake ;)
 -- vim.keymap.set("n", "<C-J>", ":m- <CR>==", { desc = "Move line down 1" })
--- vim.keymap.set("n", "<C-K>", ":m+ <CR>==", { desc = "Move line up 1" })
 -- vim.keymap.set("v", "<A-j>", ":m '>-1<CR>gv=gv", { desc = "Move line(s) down 1" })
 -- vim.keymap.set("v", "<A-k>", ":m '>+1<CR>gv=gv", { desc = "Move line(s) up 1" })
 
@@ -672,6 +672,13 @@ vim.keymap.set("n", "<leader>/", "<cmd>Commentary<CR>", { desc = "[/] comment ou
 vim.keymap.set("v", "<leader>/", ":Commentary<CR>", { desc = "[/] Comment Out Current Selection" })
 vim.keymap.set("n", "<C-/>", "<cmd>Commentary<CR>", { desc = "[/] comment out current line" })
 vim.keymap.set("v", "<C-/>", ":Commentary<CR>", { desc = "[/] Comment Out Current Selection" })
+
+-- Primeagen magic keybinds here:::::
+-- Join lines keeping cursor position
+vim.keymap.set("n", "J", "mzJ`z")
+-- Page up/down PLUS center screen
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 local paper_is_active = false
 vim.api.nvim_create_user_command("TogglePaper", function(_)
