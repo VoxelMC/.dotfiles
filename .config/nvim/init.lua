@@ -3,6 +3,7 @@
 --
 -- To define custom keybinds, search for "Custom Keybinds" in this file.
 --]]
+print("Welcome! :)")
 
 --  NOTE: This must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
@@ -499,8 +500,19 @@ require("lazy").setup({
         lazy = false,
         priority = 1000,
         config = function()
-            require 'nordic'.load()
+            -- require 'nordic'.load()
         end
+    },
+    {
+        "zaldih/themery.nvim",
+        opts = {
+            themes = { "nordic", "flexoki-dark", "flexoki-light", "tokyonight-night", "tokyonight-moon", "tokyonight-storm" },
+            -- Your list of installed colorschemes
+            themeConfigFile = "~/.config/nvim/lua/settings/theme.lua",
+            -- Described below
+            livePreview = true,
+            -- Apply theme while browsing. Default to true.
+        }
     },
     {
         -- Theme inspired by Atom
@@ -509,7 +521,7 @@ require("lazy").setup({
         config = function()
             -- vim.cmd.colorscheme 'tokyonight-moon'
             -- vim.cmd([[:colorscheme tokyonight-moon]])
-            vim.cmd([[:colorscheme flexoki-dark]])
+            -- vim.cmd([[:colorscheme flexoki-dark]])
         end,
     },
     "yorickpeterse/vim-paper",
@@ -1066,6 +1078,8 @@ cmp.setup({
         { name = "luasnip" },
     },
 })
+
+require("settings.theme")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=4 sts=4 sw=4 et

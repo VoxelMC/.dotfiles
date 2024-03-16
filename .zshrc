@@ -110,9 +110,9 @@ bindkey '^[[1;2C' forward-word
 alias gotoconfig="nvim ~/.config/"
 alias sourcezsh="source ~/.zshrc; echo ' $ $IYELLOW''Sourced zshrc!$RESET'"
 
-alias confignvim="nvim ~/.config/nvim/init.lua"
+alias confignvim="nvim ~/.dotfiles/.config/nvim/init.lua"
 alias editnvim="confignvim"
-alias configzsh="nvim ~/.zshrc && sourcezsh"
+alias configzsh="nvim ~/.dotfiles/.zshrc && sourcezsh"
 alias editzsh="configzsh"
 alias configwez="nvim ~/.wezterm.lua"
 alias editwez="configwez"
