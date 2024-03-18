@@ -211,7 +211,7 @@ require("lazy").setup({
 
             require("lspconfig").grammarly.setup {
                 -- on_attach = on_attach,
-                filetypes = { "txt" },
+                filetypes = { "txt", "typ", "typst" },
                 init_options = { clientId = "client_BaDkMgx4X19X9UxxYRCXZo" }
             }
         end,
@@ -506,7 +506,21 @@ require("lazy").setup({
     {
         "zaldih/themery.nvim",
         opts = {
-            themes = { "nordic", "flexoki-dark", "flexoki-light", "tokyonight-night", "tokyonight-moon", "tokyonight-storm" },
+            themes = {
+                "nordic",
+                "kanagawa-wave",
+                "kanagawa-dragon",
+                "kanagawa-lotus",
+                "flexoki-dark",
+                "flexoki-light",
+                "tokyonight-night",
+                "tokyonight-moon",
+                "tokyonight-storm",
+                "catppuccin-frappe",
+                "catppuccin-latte",
+                "catppuccin-macchiato",
+                "catppuccin-mocha"
+            },
             -- Your list of installed colorschemes
             themeConfigFile = "~/.config/nvim/lua/settings/theme.lua",
             -- Described below
@@ -623,6 +637,10 @@ require("nvim-treesitter.configs").setup({
 -- Configure oil.nvim
 require("oil").setup({
     skip_confirm_for_simple_edits = false,
+    -- columns = {
+    --     "icon",
+    --     "size",
+    -- },
     view_options = {
         -- Show files and directories that start with "."
         show_hidden = true,
