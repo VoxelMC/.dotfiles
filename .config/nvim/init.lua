@@ -95,6 +95,8 @@ vim.api.nvim_create_user_command("CenterOn", function() vim.cmd([[:setlocal scro
     { desc = "Enable cursor center on screen" })
 vim.api.nvim_create_user_command("CenterOff", function() vim.cmd([[:setlocal scrolloff=-1]]) end,
     { desc = "Disable cursor center on screen" })
+-- 'test'
+vim.keymap.set("n", "<C-'>", "cs'`", { desc = "Cycle through quotation types." })
 -- Other Misc Keymaps
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -333,9 +335,20 @@ require("lazy").setup({
 
     -- Useful plugin to show you pending keybinds.
     -- FOLKE
-    { "folke/which-key.nvim",    opts = {} },
+    { "folke/which-key.nvim",            opts = {} },
     {
         "folke/zen-mode.nvim",
+        config = function()
+            vim.api.nvim_create_user_command("Zen", function()
+                require 'zen-mode'.toggle { window = { width = 0.55 } }
+            end, { desc = "Activate Zen Mode with a wider screen" })
+            vim.api.nvim_create_user_command("ZenWide", function()
+                require 'zen-mode'.toggle { window = { width = 0.85 } }
+            end, { desc = "Activate Zen Mode with a wider screen" })
+            vim.api.nvim_create_user_command("ZenFull", function()
+                require 'zen-mode'.toggle { window = { width = 1 } }
+            end, { desc = "Activate Zen Mode with a wider screen" })
+        end,
         opts = {
             window = {
                 width = .60
@@ -485,6 +498,11 @@ require("lazy").setup({
         priority = 1000
     },
     {
+        "cocopon/iceberg.vim",
+        name = "iceberg",
+        priority = 1000
+    },
+    {
         "rebelot/kanagawa.nvim",
         name = "kanagawa",
         priority = 1000
@@ -494,7 +512,73 @@ require("lazy").setup({
         name = 'flexoki',
         priority = 1001
     },
+    {
+        "Alexis12119/nightly.nvim",
+        lazy = false,
+        priority = 1000,
+    },
+    {
+        'space-chalk/spacechalk.nvim',
+        lazy = false,    -- loaded during startup since it's the main colorscheme
+        priority = 1000, -- load this before all other start plugins
+    },
+
+    {
+        'olivercederborg/poimandres.nvim',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            require('poimandres').setup {
+                bold_vert_split = false,          -- use bold vertical separators
+                dim_nc_background = false,        -- dim 'non-current' window backgrounds
+                disable_background = false,       -- disable background
+                disable_float_background = false, -- disable background for floats
+                disable_italics = false,          -- disable italics
+            }
+        end,
+    },
     { "fffnite/gleam-theme-nvim" },
+    { "shatur/neovim-ayu" },
+    { "kartikp10/noctis.nvim" },
+    { "biscuit-colorscheme/nvim" },
+    { "rktjmp/lush.nvim" },
+    { "fafa-a/anoukis" },
+    { 'nyoom-engineering/oxocarbon.nvim' },
+    {
+        'datsfilipe/min-theme.nvim',
+        config = function()
+            require('min-theme').setup({
+                -- (note: if your configuration sets vim.o.background the following option will do nothing!)
+                theme = 'dark',       -- String: 'dark' or 'light', determines the colorscheme used
+                transparent = false,  -- Boolean: Sets the background to transparent
+                italics = {
+                    comments = true,  -- Boolean: Italicizes comments
+                    keywords = true,  -- Boolean: Italicizes keywords
+                    functions = true, -- Boolean: Italicizes functions
+                    strings = true,   -- Boolean: Italicizes strings
+                    variables = true, -- Boolean: Italicizes variables
+                },
+                overrides = {},       -- A dictionary of group names, can be a function returning a dictionary or a table.
+            })
+        end
+    },
+    {
+        "https://gitlab.com/bartekjaszczak/distinct-nvim",
+        priority = 1000,
+        config = function()
+            require("distinct").setup({
+                doc_comments_different_color = true, -- Use different colour for documentation comments
+            })
+        end
+    },
+    {
+        "timofurrer/edelweiss",
+        lazy = false,    -- make sure we load this during startup, because it's the main colorscheme
+        priority = 1000, -- make sure to load this before all the other start plugins
+        config = function(plugin)
+            vim.opt.rtp:append(plugin.dir .. "/nvim")
+        end
+    },
     {
         'AlexvZyl/nordic.nvim',
         lazy = false,
@@ -507,19 +591,32 @@ require("lazy").setup({
         "zaldih/themery.nvim",
         opts = {
             themes = {
-                "nordic",
-                "kanagawa-wave",
-                "kanagawa-dragon",
-                "kanagawa-lotus",
-                "flexoki-dark",
-                "flexoki-light",
-                "tokyonight-night",
-                "tokyonight-moon",
-                "tokyonight-storm",
+                "ayu-dark",
+                "ayu-mirage",
+                "biscuit",
                 "catppuccin-frappe",
-                "catppuccin-latte",
                 "catppuccin-macchiato",
-                "catppuccin-mocha"
+                "catppuccin-mocha",
+                "distinct",
+                "flexoki-dark",
+                "gleam",
+                "kanagawa-dragon",
+                "kanagawa-wave",
+                "min-theme",
+                "nightly",
+                "noctis",
+                "nordic",
+                "oxocarbon",
+                "poimandres",
+                "spacechalk",
+                "tokyonight-moon",
+                "tokyonight-night",
+                "tokyonight-storm",
+                "ayu-light",
+                "catppuccin-latte",
+                "edelweiss",
+                "flexoki-light",
+                "kanagawa-lotus",
             },
             -- Your list of installed colorschemes
             themeConfigFile = "~/.config/nvim/lua/settings/theme.lua",

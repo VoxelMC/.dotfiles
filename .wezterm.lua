@@ -48,7 +48,8 @@ config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
 config.cursor_thickness = 2
 
--- config.font = wezterm.font "Monaspace Neon"
+config.font = wezterm.font "Monaspace Neon"
+-- config.font_size = 13
 -- config.harfbuzz_features = {
 -- 	'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'
 -- }
