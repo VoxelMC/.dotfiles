@@ -181,7 +181,9 @@ require("lazy").setup({
                 vim.cmd([[lua MiniFiles.open()]])
             end, { desc = "Open Mini.Files" })
 
-            require('mini.cursorword').setup()
+            require('mini.cursorword').setup {
+                delay = 1
+            }
             require('mini.jump').setup()
             local hipatterns = require('mini.hipatterns')
             hipatterns.setup({
@@ -697,7 +699,7 @@ require("lazy").setup({
                 "gleam",
                 "kanagawa-dragon",
                 "kanagawa-wave",
-                "min-theme",
+                "min-theme-dark",
                 "nightly",
                 "noctis",
                 "nordic",
