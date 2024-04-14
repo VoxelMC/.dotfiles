@@ -2,8 +2,8 @@
 -- Voxel's Neovim Configuration
 --
 -- To define custom keybinds, search for "Custom Keybinds" in this file.
---]]
-print("Welcome! :)")
+-- ]]
+print('Welcome! :)')
 
 --  NOTE: This must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
@@ -75,7 +75,8 @@ vim.keymap.set("i", "<S-BS>", "<C-w>", { desc = "Delete previous word" })
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     pattern = { "*" },
     callback = function()
-        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        -- vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        vim.keymap.set("n", "-", "<CMD>File<CR>", { desc = "Open parent directory" })
         -- No longer needed, but will keep in case I go back to Netrw from Oil
         -- if vim.fn.exists(":Rex") > 0 then
         --     -- Open netrw in pane
@@ -96,7 +97,7 @@ vim.api.nvim_create_user_command("CenterOn", function() vim.cmd([[:setlocal scro
 vim.api.nvim_create_user_command("CenterOff", function() vim.cmd([[:setlocal scrolloff=-1]]) end,
     { desc = "Disable cursor center on screen" })
 -- 'test'
-vim.keymap.set("n", "<C-'>", "cs'`", { desc = "Cycle through quotation types." })
+-- vim.keymap.set("n", "<C-'>", "cs'`", { desc = "Cycle through quotation types." })
 -- Other Misc Keymaps
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -124,6 +125,7 @@ require("lazy").setup({
             vim.cmd("let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.astro'")
         end,
     },
+
     -- I do not remember what this is...
     -- {
     --     'wuelnerdotexe/vim-astro',
@@ -135,9 +137,62 @@ require("lazy").setup({
 
     {
         'stevearc/oil.nvim',
-        opts = {},
+        opts = {
+            skip_confirm_for_simple_edits = false,
+            -- columns = {
+            --     "icon",
+            --     "size",
+            -- },
+            view_options = {
+                -- Show files and directories that start with "."
+                show_hidden = true,
+                -- This function defines what is considered a "hidden" file
+                is_hidden_file = function(name)
+                    return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
+                end,
+            },
+        },
         -- Optional dependencies
         dependencies = { "nvim-tree/nvim-web-devicons" },
+    },
+    {
+        'echasnovski/mini.nvim',
+        version = false,
+        config = function()
+            require("mini.files").setup {
+                mappings = {
+                    close       = 'q',
+                    go_in       = '<CR>',
+                    go_in_plus  = 'l',
+                    go_out      = '-',
+                    go_out_plus = 'h',
+                    reset       = 'X',
+                    reveal_cwd  = '@',
+                    show_help   = 'g?',
+                    synchronize = 'w',
+                    trim_left   = '<',
+                    trim_right  = '>',
+                },
+                windows = {
+                    preview = true
+                }
+            }
+            vim.api.nvim_create_user_command("File", function()
+                vim.cmd([[lua MiniFiles.open()]])
+            end, { desc = "Open Mini.Files" })
+
+            require('mini.cursorword').setup()
+            require('mini.jump').setup()
+            local hipatterns = require('mini.hipatterns')
+            hipatterns.setup({
+                highlighters = {
+                    -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+                    todo      = { pattern = '%f[%w]()todo!()()%f[%W]', group = 'MiniHipatternsTodo' },
+                    -- Highlight hex color strings (`#rrggbb`) using that color
+                    hex_color = hipatterns.gen_highlighter.hex_color(),
+                },
+            })
+        end
     },
 
     -- Git related plugins
@@ -174,6 +229,43 @@ require("lazy").setup({
     -- Enables a command to show all colour strings like this #42069F with a colour hint
     -- :ColorToggle
     "chrisbra/Colorizer",
+
+    {
+        "michaelrommel/nvim-silicon",
+        lazy = true,
+        cmd = "Silicon",
+        init = function()
+            local wk = require("which-key")
+            wk.register({
+                ["<leader>cts"] = { ":Silicon<CR>", "[C]ode: [T]ake [S]napshot" }
+            }, { mode = "v" })
+        end,
+        config = function()
+            require("silicon").setup({
+                font = "JetBrains Mono NL=34;Noto Color Emoji=34",
+                to_clipboard = true,
+                theme = "Coldark-Dark",
+                background = "#8dd9d5",
+                window_title = function()
+                    return vim.fn.fnamemodify(
+                        vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()), ":t"
+                    )
+                end
+            })
+        end
+    },
+    {
+        "mistricky/codesnap.nvim",
+        build = "make",
+        opts = {
+            save_path = "~/Pictures/CodeSnap",
+            -- has_breadcrumbs = true,
+            bg_theme = "sea",
+            watermark = "blog.trevfox.dev",
+            code_font_family = "JetBrains Mono NL",
+            -- breadcrumbs_separator = " -> ",
+        }
+    },
 
     -- NOTE: COPILOT DISABLED UNTIL I GET MY SUBSCRIPTION AGAIN...
     -- {
@@ -335,7 +427,10 @@ require("lazy").setup({
 
     -- Useful plugin to show you pending keybinds.
     -- FOLKE
-    { "folke/which-key.nvim",            opts = {} },
+    {
+        "folke/which-key.nvim",
+        opts = {}
+    },
     {
         "folke/zen-mode.nvim",
         config = function()
@@ -731,22 +826,23 @@ require("nvim-treesitter.configs").setup({
     },
 })
 
--- Configure oil.nvim
-require("oil").setup({
-    skip_confirm_for_simple_edits = false,
-    -- columns = {
-    --     "icon",
-    --     "size",
-    -- },
-    view_options = {
-        -- Show files and directories that start with "."
-        show_hidden = true,
-        -- This function defines what is considered a "hidden" file
-        is_hidden_file = function(name)
-            return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
-        end,
-    },
-})
+-- -- Configure oil.nvim
+-- require("oil").setup({
+--     skip_confirm_for_simple_edits = false,
+--     -- columns = {
+--     --     "icon",
+--     --     "size",
+--     -- },
+--     view_options = {
+--         -- Show files and directories that start with "."
+--         show_hidden = true,
+--         -- This function defines what is considered a "hidden" file
+--         is_hidden_file = function(name)
+--             return vim.startswith(name, ".") or vim.startswith(name, 'node_modules')
+--         end,
+--     },
+-- })
+
 require("nvim-web-devicons").setup {
     strict = true,
     override_by_extension = {
@@ -812,6 +908,19 @@ vim.keymap.set("n", "<leader>/", "<cmd>Commentary<CR>", { desc = "[/] comment ou
 vim.keymap.set("v", "<leader>/", ":Commentary<CR>", { desc = "[/] Comment Out Current Selection" })
 vim.keymap.set("n", "<C-/>", "<cmd>Commentary<CR>", { desc = "[/] comment out current line" })
 vim.keymap.set("v", "<C-/>", ":Commentary<CR>", { desc = "[/] Comment Out Current Selection" })
+
+-- Exit with capical 'Q'
+vim.keymap.set("n", "<CMD>Q", "<CMD>q", { desc = "Quit" })
+
+-- 'asd'
+-- Cycle quotes
+vim.keymap.set("n", "<C-'>", [[cs`"cs'`cs"']], { desc = "Cycle quotes", remap = true })
+
+-- Dupe the current line, comment it out, and paste it
+-- vim.keymap.set("n", "cl", [["fyygcc"fp]], { desc = "Copy line down and comment out the old one", remap = true })
+vim.keymap.set("n", "cl", [["fyygcc"fp]], { desc = "Copy line down and comment out the old one", remap = true })
+
+
 
 -- Primeagen magic keybinds here:::::
 -- Join lines keeping cursor position
@@ -1072,8 +1181,9 @@ local on_attach = function(_, bufnr)
     end, "[W]orkspace [L]ist Folders")
 
     -- Create a command `:Format` local to the LSP buffer
-    vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
-        vim.lsp.buf.format()
+    vim.api.nvim_buf_create_user_command(bufnr, "Format", function(args)
+        -- vim.lsp.buf.format()
+        require("conform").format({ bufnr = args.buf })
     end, { desc = "Format current buffer with LSP" })
 end
 
@@ -1195,6 +1305,7 @@ cmp.setup({
 })
 
 require("settings.theme")
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=4 sts=4 sw=4 et

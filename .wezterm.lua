@@ -23,13 +23,19 @@ wezterm.on('gui-attached', function(domain)
 
 	local main_window_id = wezterm.mux.all_windows()[1]:window_id()
 	local main_window = wezterm.mux.get_window(main_window_id)
-	local tab, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/opt/homebrew/bin/nvim', '~/Dev' } }
-	local tab, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/opt/homebrew/bin/nvim', '~/Dev/typst/ubc-typst' } }
+	-- local tab, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/opt/homebrew/bin/nvim', '~/Dev' } }
+	-- local tab2, _, _ = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/opt/homebrew/bin/nvim', '~/Dev/typst/ubc-typst' } }
+	-- local tab3, _, _ = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '-i', '-c', '/opt/homebrew/bin/nvim ~/Dev/typst/ubc-typst' } }
+	-- local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '/Users/tfox/startnvimdev.sh' } }
+	-- local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '/Users/tfox/startnvimdev.sh' } }
+	local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/Users/tfox/startnvimdev.sh' } }
 
 	-- activate the first tab
 	window:tabs()[1]:activate()
-	tab:set_title("nvim @ Dev")
-	tab:set_title("nvim @ typst-ubc")
+	-- tab:set_title("nvim @ Dev")
+	-- tab2:set_title("nvim @ typst-ubc")
+	-- tab3:set_title("Test Zsh")
+	tab4:set_title("nvim @ ~/Dev")
 end)
 
 -- local tab, pane, window = window:spawn_tab {}

@@ -1,3 +1,6 @@
+. "$HOME/.cargo/env"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 #NOTE: -> Vars
 export EDITOR=nvim
 # Don't put duplicate lines in the history and do not add lines that start with a space
@@ -65,12 +68,6 @@ function godev() {
 }
 source ~/.zsh_scripts/godev_completion.sh
 
-eval "$(zoxide init zsh)"
-function cdls() {
-	z $1
-	ls
-}
-
 function bako() {
 	echo "Backing up Obsidian - $(date)"
 	pushd -q ~/Dev/projects/Obsidian-Notes
@@ -116,8 +113,9 @@ alias configzsh="nvim ~/.dotfiles/.zshrc && sourcezsh"
 alias editzsh="configzsh"
 alias configwez="nvim ~/.wezterm.lua"
 alias editwez="configwez"
+alias editgit="nvim ~/.gitconfig"
 
-alias editautocomplete="nvim '$(espanso path config)'"
+alias finder="open ."
 
 alias t="tree -L"
 
@@ -151,6 +149,7 @@ alias activatevenv="source venv/bin/activate"
 
 alias nmr="ssh -Y pshipley@nmr400.ok.ubc.ca"
 alias svr="ssh -Y tfox@10.0.0.136"
+alias nep="ssh -Y neptuneadmin@192.168.10.100"
 alias pc="ssh tfox@10.0.0.198"
 
 alias s="grep"
@@ -258,6 +257,8 @@ alias checkcommand="type"
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
+eval "$(zoxide init zsh)"
+#alias editautocomplete="nvim '$(espanso path config)'"
 
 alias ohmyzsh="nvim ~/.oh-my-zsh"
 export MODULAR_HOME="/Users/tfox/.modular"
@@ -282,7 +283,14 @@ esac
 PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
 export PATH
 # wezterm end
+# echo "$(date) -- .zshrc executed"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 PATH=~/.console-ninja/.bin:$PATH
+
+function cdls() {
+	z $1
+	ls
+}
+
