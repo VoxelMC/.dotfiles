@@ -161,7 +161,7 @@ require("lazy").setup({
         config = function()
             require("mini.files").setup {
                 mappings = {
-                    close       = 'q',
+                    close       = '<ESC>',
                     go_in       = '<CR>',
                     go_in_plus  = 'l',
                     go_out      = '-',
