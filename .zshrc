@@ -89,6 +89,9 @@ function bako() {
 # bindkey '^[[B' clear-line-down-arrow
 # bindkey '^[[B' down-line-or-history
 # Clear command line on down arrow
+
+
+
 function clear-line-down-arrow() {
     BUFFER=""
     zle redisplay
@@ -115,6 +118,7 @@ alias configwez="nvim ~/.wezterm.lua"
 alias editwez="configwez"
 alias editgit="nvim ~/.gitconfig"
 
+
 alias finder="open ."
 
 alias t="tree -L"
@@ -132,6 +136,8 @@ alias 777='chmod -R 777'
 unalias la
 unalias ll
 unalias ls
+
+alias nvif='nvim "$(fzf --preview="cat {}")"'
 
 alias ls="ls --color=auto"
 alias ll="ls -l"
@@ -159,6 +165,7 @@ alias cd="cdls"
 alias c="clear"
 
 alias gs="git status"
+alias ff="git pull"
 
 alias cbcopy="pbcopy"
 alias cbpaste="pbpaste"

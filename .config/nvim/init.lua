@@ -75,8 +75,8 @@ vim.keymap.set("i", "<S-BS>", "<C-w>", { desc = "Delete previous word" })
 vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     pattern = { "*" },
     callback = function()
-        -- vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
-        vim.keymap.set("n", "-", "<CMD>File<CR>", { desc = "Open parent directory" })
+        vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        -- vim.keymap.set("n", "-", "<CMD>File<CR>", { desc = "Open parent directory" })
         -- No longer needed, but will keep in case I go back to Netrw from Oil
         -- if vim.fn.exists(":Rex") > 0 then
         --     -- Open netrw in pane
@@ -134,11 +134,43 @@ require("lazy").setup({
     --         -- vim.cmd([[let g:astro_stylus = 'enable']])
     --     end
     -- },
+    {
+        "nvim-tree/nvim-web-devicons",
+        opts = {
+            strict = true,
+            config = function()
+                -- require "nvim-web-devicons".set_icon {
+                --     astro = {
+                --         icon = "",
+                --         color = "#f1502f",
+                --         name = "astro",
+                --     }
+                -- }
+            end,
+            override_by_extension = {
+                -- ["astro"] = {
+                --     icon = "",
+                --     color = "#f1502f",
+                --     name = "Astro",
+                -- },
+                -- ["gleam"] = {
+                --     icon = "",
+                --     color = "#ffaef3",
+                --     name = "Gleam",
+                -- },
+                ["typ"] = {
+                    icon = "t",
+                    color = "#239dad",
+                    name = "Typst",
+                },
+            },
+        }
+    },
 
     {
         'stevearc/oil.nvim',
         opts = {
-            skip_confirm_for_simple_edits = false,
+            skip_confirm_for_simple_edits = true,
             -- columns = {
             --     "icon",
             --     "size",
@@ -190,11 +222,25 @@ require("lazy").setup({
                 highlighters = {
                     -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
                     todo      = { pattern = '%f[%w]()todo!()()%f[%W]', group = 'MiniHipatternsTodo' },
-                    -- Highlight hex color strings (`#rrggbb`) using that color
                     hex_color = hipatterns.gen_highlighter.hex_color(),
                 },
             })
         end
+    },
+
+    {
+        'NTBBloodbath/color-converter.nvim',
+        config = function()
+            vim.api.nvim_create_user_command("ToRgb", function()
+                require 'color-converter'.to_rgb()
+            end, { desc = "Convert a colour value to css RGB format." })
+            vim.api.nvim_create_user_command("ToHex", function()
+                require 'color-converter'.to_hex()
+            end, { desc = "Convert a colour value to css HEX format." })
+            vim.api.nvim_create_user_command("ToHsl", function()
+                require 'color-converter'.to_hsl()
+            end, { desc = "Convert a colour value to css HSL format." })
+        end -- Highlight hex color strings (`#rrggbb`) using that color
     },
 
     -- Git related plugins
@@ -238,9 +284,9 @@ require("lazy").setup({
         cmd = "Silicon",
         init = function()
             local wk = require("which-key")
-            wk.register({
-                ["<leader>cts"] = { ":Silicon<CR>", "[C]ode: [T]ake [S]napshot" }
-            }, { mode = "v" })
+            wk.add({
+                { "<leader>cts", ":Silicon<CR>", desc = "[C]ode: [T]ake [S]napshot", mode = "v" },
+            })
         end,
         config = function()
             require("silicon").setup({
@@ -392,6 +438,8 @@ require("lazy").setup({
     },
 
     'NoahTheDuke/vim-just',
+
+    -- Formatter
     {
         "stevearc/conform.nvim",
         opts = {
@@ -406,13 +454,17 @@ require("lazy").setup({
                 -- Conform will run multiple formatters sequentially
                 python = { "isort", "black" },
                 -- Use a sub-list to run only the first available formatter
-                javascript = { { "prettierd", "prettier" } },
-                astro = { "prettier" },
+                javascript = { "prettier" },
+                -- astro = { "prettier" },
                 typescript = { "prettier" },
             },
         },
     },
+
+    -- Gleam support
     'gleam-lang/gleam.vim',
+
+    -- Typst support
     {
         "chomosuke/typst-preview.nvim",
         lazy = true,
@@ -433,6 +485,8 @@ require("lazy").setup({
         "folke/which-key.nvim",
         opts = {}
     },
+
+    -- Zen
     {
         "folke/zen-mode.nvim",
         config = function()
@@ -459,6 +513,8 @@ require("lazy").setup({
             }
         }
     },
+
+    -- Error list
     {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -472,6 +528,8 @@ require("lazy").setup({
             vim.keymap.set("n", "<leader>lp", "<cmd>Trouble workspace_diagnostics<cr>", { desc = "[L]ist [P]roblems" })
         end,
     },
+
+    -- Todo comment highlights
     {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim", "folke/trouble.nvim" },
@@ -716,7 +774,6 @@ require("lazy").setup({
                 "kanagawa-lotus",
             },
             -- Your list of installed colorschemes
-            themeConfigFile = "~/.config/nvim/lua/settings/theme.lua",
             -- Described below
             livePreview = true,
             -- Apply theme while browsing. Default to true.
@@ -845,26 +902,26 @@ require("nvim-treesitter.configs").setup({
 --     },
 -- })
 
-require("nvim-web-devicons").setup {
-    strict = true,
-    override_by_extension = {
-        ["astro"] = {
-            icon = "",
-            color = "#f1502f",
-            name = "Astro",
-        },
-        ["gleam"] = {
-            icon = "",
-            color = "#ffaef3",
-            name = "Gleam",
-        },
-        ["typ"] = {
-            icon = "t",
-            color = "#239dad",
-            name = "Typst",
-        },
-    },
-}
+-- require("nvim-web-devicons").setup {
+--     strict = true,
+--     override_by_extension = {
+--         ["astro"] = {
+--             icon = "",
+--             color = "#f1502f",
+--             name = "Astro",
+--         },
+--         ["gleam"] = {
+--             icon = "",
+--             color = "#ffaef3",
+--             name = "Gleam",
+--         },
+--         ["typ"] = {
+--             icon = "t",
+--             color = "#239dad",
+--             name = "Typst",
+--         },
+--     },
+-- }
 
 -- Set highlight on search
 vim.o.hlsearch = false
@@ -1161,7 +1218,7 @@ local on_attach = function(_, bufnr)
     end
 
     nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
-    nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
+    nmap("<leader>c.", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
     nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
     nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -1190,17 +1247,37 @@ local on_attach = function(_, bufnr)
 end
 
 -- document existing key chains
-require("which-key").register({
-    ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
-    ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
-    ["<leader>g"] = { name = "[G]it", _ = "which_key_ignore" },
+require("which-key").add({
+
+    { "<leader>c",  group = "[C]ode" },
+    { "<leader>c_", hidden = true },
+    { "<leader>d",  group = "[D]ocument" },
+    { "<leader>d_", hidden = true },
+    { "<leader>f",  group = "[F]ile Management" },
+    { "<leader>f_", hidden = true },
+    { "<leader>g",  group = "[G]it" },
+    { "<leader>g_", hidden = true },
+    { "<leader>l",  group = "[L]ook" },
+    { "<leader>l_", hidden = true },
+    { "<leader>o",  group = "[O]pen" },
+    { "<leader>o_", hidden = true },
+    { "<leader>r",  group = "[R]ename" },
+    { "<leader>r_", hidden = true },
+    { "<leader>s",  group = "[S]earch" },
+    { "<leader>s_", hidden = true },
+    { "<leader>w",  group = "[W]orkspace" },
+    { "<leader>w_", hidden = true },
+
+    -- ["<leader>c"] = { name = "[C]ode", _ = "which_key_ignore" },
+    -- ["<leader>d"] = { name = "[D]ocument", _ = "which_key_ignore" },
+    -- ["<leader>g"] = { name = "[G]it", _ = "which_key_ignore" },
     -- ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-    ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
-    ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
-    ["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
-    ["<leader>f"] = { name = "[F]ile Management", _ = "which_key_ignore" },
-    ["<leader>o"] = { name = "[O]pen", _ = "which_key_ignore" },
-    ["<leader>l"] = { name = "[L]ook", _ = "which_key_ignore" },
+    -- ["<leader>r"] = { name = "[R]ename", _ = "which_key_ignore" },
+    -- ["<leader>s"] = { name = "[S]earch", _ = "which_key_ignore" },
+    -- ["<leader>w"] = { name = "[W]orkspace", _ = "which_key_ignore" },
+    -- ["<leader>f"] = { name = "[F]ile Management", _ = "which_key_ignore" },
+    -- ["<leader>o"] = { name = "[O]pen", _ = "which_key_ignore" },
+    -- ["<leader>l"] = { name = "[L]ook", _ = "which_key_ignore" },
 })
 
 -- mason-lspconfig requires that these setup functions are called in this order
@@ -1272,8 +1349,8 @@ cmp.setup({
         end,
     },
     mapping = cmp.mapping.preset.insert({
-        ["<C-n>"] = cmp.mapping.select_next_item(),
-        ["<C-p>"] = cmp.mapping.select_prev_item(),
+        -- ["<C-N>"] = cmp.mapping.select_next_item(),
+        -- ["<C-P>"] = cmp.mapping.select_prev_item(),
         ["<C-d>"] = cmp.mapping.scroll_docs(-4),
         ["<C-f>"] = cmp.mapping.scroll_docs(4),
         -- ['<CR>'] = cmp.mapping.complete {},
@@ -1306,8 +1383,9 @@ cmp.setup({
     },
 })
 
-require("settings.theme")
+vim.keymap.set("i", "<C-.>", "|>")
 
+-- require("settings.theme")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=4 sts=4 sw=4 et

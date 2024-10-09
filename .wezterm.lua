@@ -54,10 +54,25 @@ config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
 config.cursor_thickness = 2
 
-config.font = wezterm.font "Monaspace Neon"
+-- Feeling Monaspace
+config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
+-- config.font = wezterm.font "MonaspiceKr Nerd Font Mono"
+-- End
+
+-- Feeling JetBrains Mono
+-- config.font = wezterm.font "JetBrainsMono Nerd Font"
+-- End
+
+-- config.font = wezterm.font "Monaspace Neon" DONT USE
+
+-- Feeling SpaceMono
+-- config.font = wezterm.font "SpaceMono Nerd Font"
 -- config.font_size = 13
+-- config.line_height = 0.8
+-- End
+
 config.harfbuzz_features = {
-	'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'
+	'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'rlig', 'liga'
 }
 
 -- config.dpi = 152
