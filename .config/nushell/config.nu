@@ -59,7 +59,7 @@ alias gpt = git push origin --follow-tags
 
 def --env tag [name: string, ...message: string] {
 	let rest = $message | str join " ";
-	git tag -a $name -m $rest;
+	git tag -s $name -m $rest;
 }
 
 def --env gitaliases [] {
