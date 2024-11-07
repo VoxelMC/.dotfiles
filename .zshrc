@@ -1,6 +1,8 @@
 . "$HOME/.cargo/env"
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+export XDG_CONFIG_HOME="$HOME/.config"
+
 #NOTE: -> Vars
 export EDITOR=nvim
 # Don't put duplicate lines in the history and do not add lines that start with a space
@@ -157,6 +159,7 @@ alias nmr="ssh -Y pshipley@nmr400.ok.ubc.ca"
 alias svr="ssh -Y tfox@10.0.0.136"
 alias nep="ssh -Y neptuneadmin@192.168.10.100"
 alias pc="ssh tfox@10.0.0.198"
+alias sup="ssh tfox@192.168.68.68"
 
 alias s="grep"
 
@@ -301,3 +304,4 @@ function cdls() {
 	ls
 }
 
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"

@@ -45,6 +45,7 @@ config.initial_rows = 30
 config.native_macos_fullscreen_mode = true
 -- For example, changing the color scheme:
 config.color_scheme = 'Tokyo Night'
+-- config.color_scheme = 'Panda (Gogh)'
 -- config.color_scheme = 'Tokyo Night (Gogh)'
 
 -- config.default_cursor_style = "BlinkingUnderline"
@@ -53,6 +54,10 @@ config.animation_fps = 1
 config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
 config.cursor_thickness = 2
+
+config.enable_kitty_keyboard = true
+config.enable_csi_u_key_encoding = false
+config.hide_tab_bar_if_only_one_tab = true
 
 -- Feeling Monaspace
 config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
@@ -89,6 +94,11 @@ config.keys = {
 	--   action = wezterm.action.SendKey { key = 'Escape' },
 	-- },
 	{
+		key = 'k',
+		mods = 'CMD',
+		action = wezterm.action.DisableDefaultAssignment,
+	},
+	{
 		key = "f",
 		mods = "CMD|SHIFT",
 		action = wezterm.action.ToggleFullScreen,
@@ -110,14 +120,15 @@ config.window_padding = {
 config.use_fancy_tab_bar = false
 config.tab_max_width = 200
 config.show_tab_index_in_tab_bar = false
-config.hide_tab_bar_if_only_one_tab = false
+-- config.hide_tab_bar_if_only_one_tab = false
 
 -- BELOW IS TAB BAR CONFIGURATION
 
 config.colors = {
+	background = "0B0D14",
 	tab_bar = {
-		-- background = "#1a1b26",
-		background = "transparent",
+		background = "#1a1b26",
+		-- background = "transparent",
 		new_tab = {
 			bg_color = '#302042',
 			fg_color = '#FFFFFF',
@@ -207,20 +218,21 @@ wezterm.on(
 	end
 )
 
-config.background = {
-	{
-		source = {
-			-- File = '/Users/tfox/Downloads/Dark Background Levi Frey.jpg'
-			-- File = '/Users/tfox/Downloads/Annie Spratt Dark Background.jpg'
-			File = '/Users/tfox/Downloads/Dark Background Shyam.jpg'
-			-- File = '/Users/tfox/Downloads/Dark Background Annie Spratt.jpg'
-			-- File = '/Users/tfox/Downloads/Dark Background Evgeni Evgeniev.jpg'
-			-- File = '/Users/tfox/Downloads/fireplace.gif'
-		},
-		vertical_align = "Middle",
-		attachment = "Fixed",
-		hsb = { brightness = 0.04 }
-	}
-}
+-- config.background = {
+-- 	{
+-- 		source = {
+-- 			-- File = '/Users/tfox/Downloads/Dark Background Levi Frey.jpg'
+-- 			-- File = '/Users/tfox/Downloads/Annie Spratt Dark Background.jpg'
+-- 			File = '/Users/tfox/Downloads/Dark Background Shyam.jpg'
+-- 			-- File = '/Users/tfox/Downloads/Dark Background Annie Spratt.jpg'
+-- 			-- File = '/Users/tfox/Downloads/Dark Background Evgeni Evgeniev.jpg'
+-- 			-- File = '/Users/tfox/Downloads/fireplace.gif'
+-- 		},
+-- 		vertical_align = "Middle",
+-- 		attachment = "Fixed",
+-- 		hsb = { brightness = 0.04 }
+-- 	}
+-- }
+
 -- and finally, return the configuration to wezterm
 return config
