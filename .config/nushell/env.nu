@@ -111,6 +111,8 @@ path add ($env.NUPM_HOME | path join "scripts")
 path add ($env.CARGO_HOME | path join "bin")
 path add /Users/tfox/Library/pnpm
 path add /Applications/Hyper.app/Contents/Resources/bin
+path add ($env.HOME | path join ".cargo" "env")
+path add /usr/local/go/bin
 
 # $env.PATH = ($env.PATH | uniq)
 

@@ -15,6 +15,17 @@ def --env n [...file: string] {
 	}
 }
 
+def --env bako [] {
+	let dir = pwd
+	let now = (date now | format date "%Y-%m-%d")
+	let msg = "Backup: " + $now
+	cd /Users/tfox/Dev/obsidian
+	git add .
+	git commit -m $msg
+	git push
+	cd $dir
+}
+
 alias gonupkg = cd ~/.cache/nuscripts/packages;
 
 alias editnuenv = nvim ~/.config/nushell/env.nu;
@@ -23,15 +34,18 @@ alias editnvim = nvim ~/.dotfiles/.config/nvim/init.lua;
 alias editzsh = nvim ~/.zshrc;
 alias editwez = nvim ~/.wezterm.lua;
 alias editgit = nvim ~/.gitconfig;
+alias editrio = nvim ~/.config/rio/config.toml;
 
 # Create aliases for git
 
-alias g = git
+alias g = lazygit
 alias gcl = git clone
 
 alias gs = git status
 alias ga = git add
 alias gaa = git add .
+
+alias gitfixbuffer = git config http.postBuffer 524288000
 
 alias gc = git commit
 alias gcm = git commit -m
@@ -56,6 +70,8 @@ alias gt = git tag
 alias glt = git tag -l -n9
 alias gtd = git tag --delete
 alias gpt = git push origin --follow-tags
+
+alias gl = gleam;
 
 def --env tag [name: string, ...message: string] {
 	let rest = $message | str join " ";

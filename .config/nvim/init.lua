@@ -3,17 +3,23 @@
 --
 -- To define custom keybinds, search for "Custom Keybinds" in this file.
 -- ]]
-print('Welcome! :)')
+-- print('Welcome! :)')
 
 --  NOTE: This must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 local setopt = vim.opt
 
--- Cast a magic spell to add relative line numbers to Netrw
+-- Default Cursor Options (see :h guicursor):
+-- vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
+vim.opt.guicursor = "n-v-c-sm-i-ci-ve:block,r-cr-o:hor20"
+
+-- Cast a magic spell to add relative line numbers to Netrw, not that it matters anymore...
 vim.cmd([[let g:netrw_bufsettings="noma nomod nu nobl nowrap ro rnu"]])
-vim.cmd([[set foldmethod=indent]])
-vim.cmd([[set foldlevel=99]])
+vim.o.foldmethod = 'indent'
+vim.o.foldlevel = 99
+vim.o.foldenable = true
+-- vim.o.foldcolumn = '1'
 
 local transparent = false;
 
@@ -85,10 +91,21 @@ vim.keymap.set("i", "<S-BS>", "<C-w>", { desc = "Delete previous word" })
 
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
--- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
---     pattern = { "*" },
---     callback = function()
---         -- vim.keymap.set("n", "-", "<CMD>File<CR>", { desc = "Open parent directory" })
+local center_disabled = false
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+    pattern = { "*" },
+    callback = function()
+        -- vim.keymap.set("n", "-", "<CMD>File<CR>", { desc = "Open parent directory" })
+        -- I want everyone to know that I did this because i don't know how to do inequality in Lua.
+        local is_dashboard = vim.bo.filetype == ""
+        local is_noice = vim.bo.filetype == "noice"
+        local is_oil = vim.bo.filetype == "oil"
+        local go = not center_disabled and not is_dashboard and not is_noice and not is_oil
+        if go then
+            vim.cmd [[:CenterOn]]
+        end
+    end,
+})
 
 -- No longer needed, but will keep in case I go back to Netrw from Oil (AS IF, LOL)
 -- if vim.fn.exists(":Rex") > 0 then
@@ -115,6 +132,7 @@ vim.api.nvim_create_user_command("Q",
 
 -- Command to turn on or off centering to the cursor.
 vim.api.nvim_create_user_command("CenterOn", function()
+        center_disabled = false
         -- vim.cmd([[:setlocal scrolloff=999]])
         vim.cmd([[nnoremap k kzz]])
         vim.cmd([[nnoremap j jzz]])
@@ -127,11 +145,16 @@ vim.api.nvim_create_user_command("CenterOn", function()
         -- also for visual mode
         vim.cmd([[vnoremap <C-u> <C-u>zz]])
         vim.cmd([[vnoremap <C-d> <C-d>zz]])
+        -- also for finding next/previous
+        vim.cmd([[nnoremap n nzz]])
+        vim.cmd([[nnoremap N Nzz]])
     end,
     { desc = "Enable cursor center on screen" }
 )
 
 vim.api.nvim_create_user_command("CenterOff", function()
+        center_disabled = true
+
         -- vim.cmd([[:setlocal scrolloff=-1]])
         vim.cmd([[nnoremap k k]])
         vim.cmd([[nnoremap j j]])
@@ -144,11 +167,13 @@ vim.api.nvim_create_user_command("CenterOff", function()
         -- also for visual mode
         vim.cmd([[vnoremap <C-u> <C-u>]])
         vim.cmd([[vnoremap <C-d> <C-d>]])
+        -- also for finding next/previous
+        vim.cmd([[nnoremap n n]])
+        vim.cmd([[nnoremap N N]])
     end,
     { desc = "Disable cursor center on screen" }
 )
 
-vim.cmd [[:CenterOn]]
 
 -- 'test'
 -- vim.keymap.set("n", "<C-'>", "cs'`", { desc = "Cycle through quotation types." })
@@ -246,7 +271,6 @@ require("lazy").setup({
             },
         }
     },
-
     {
         'stevearc/oil.nvim',
         opts = {
@@ -290,6 +314,8 @@ require("lazy").setup({
         'echasnovski/mini.nvim',
         version = false,
         config = function()
+            require('mini.sessions').setup()
+            -- MiniSessions.setup()
             require("mini.files").setup {
                 mappings = {
                     close       = '<ESC>',
@@ -415,16 +441,16 @@ require("lazy").setup({
     },
 
     -- NOTE: COPILOT DISABLED UNTIL I GET MY SUBSCRIPTION AGAIN...
-    {
-        "github/copilot.vim",
-        config = function()
-            vim.keymap.set("i", "<C-G>", 'copilot#Accept("<CR>")', {
-                expr = true,
-                replace_keycodes = false,
-            })
-            vim.g.copilot_no_tab_map = true
-        end,
-    },
+    -- {
+    --     "github/copilot.vim",
+    --     config = function()
+    --         vim.keymap.set("i", "<C-G>", 'copilot#Accept("<CR>")', {
+    --             expr = true,
+    --             replace_keycodes = false,
+    --         })
+    --         vim.g.copilot_no_tab_map = true
+    --     end,
+    -- },
 
     -- NOTE: This is where your plugins related to LSP can be installed.
     --  The configuration is done below. Search for lspconfig to find it below.
@@ -616,6 +642,80 @@ require("lazy").setup({
     },
 
     {
+        "folke/snacks.nvim",
+        priority = 1000,
+        lazy = false,
+        ---@type snacks.Config
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+            scratch = {
+                enabled = true,
+                -- style = {
+                --     minimal = false,
+                --     border = 'rounded',
+                --     title_pos = 'center',
+                --     footer_pos = 'center',
+                --     bo = { buftype = "", buflisted = false, "bufhidden = hide", swapfile = false },
+                -- }
+            },
+            bigfile = { enabled = true },
+            notifier = { enabled = true },
+            quickfile = { enabled = true },
+            statuscolumn = { enabled = true },
+            words = { enabled = true },
+            lazygit = { configure = true },
+            dashboard = {
+                enabled = true,
+                preset = {
+                    keys = {
+                        { icon = " ", key = "o", desc = "Open Oil", action = ":Oil" },
+                        { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
+                        { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+                        { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
+                        { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
+                        -- { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+                        -- { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+                        { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy", enabled = package.loaded.lazy },
+                        { icon = " ", key = "q", desc = "Quit", action = ":qa" },
+                    },
+                },
+                sections = {
+                    { section = "keys", gap = 1, padding = 1 },
+                    { pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
+                    { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+                    {
+                        pane = 2,
+                        icon = " ",
+                        title = "Git Status",
+                        section = "terminal",
+                        enabled = vim.fn.isdirectory(".git") == 1,
+                        cmd = "git status --short --branch --renames",
+                        height = 5,
+                        padding = 1,
+                        ttl = 5 * 60,
+                        indent = 3,
+                    },
+                    { section = "startup" },
+                }
+            }
+        },
+        keys = {
+            -- { "<leader>", function() end, desc = ""},
+            { "<leader>.",  function() Snacks.scratch() end,          desc = "Toggle Scratch Buffer" },
+            { "<leader>S",  function() Snacks.scratch.select() end,   desc = "Select Scratch Buffer" },
+            { "<leader>un", function() Snacks.notifier.hide() end,    desc = "Dismiss All Notifications" },
+            { "<leader>bd", function() Snacks.bufdelete() end,        desc = "Delete Buffer" },
+            { "<leader>gg", function() Snacks.lazygit() end,          desc = "Lazygit" },
+            { "<leader>gb", function() Snacks.git.blame_line() end,   desc = "Git Blame Line" },
+            { "<leader>gB", function() Snacks.gitbrowse() end,        desc = "Git Browse" },
+            { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit Current File History" },
+            { "<leader>gl", function() Snacks.lazygit.log() end,      desc = "Lazygit Log (cwd)" },
+            { "<leader>od", function() Snacks.dashboard.open() end,   desc = "Dashboard" },
+        }
+    },
+    {
         'folke/noice.nvim',
         event = "VeryLazy",
         -- config = function()
@@ -656,6 +756,7 @@ require("lazy").setup({
 
     {
         "svampkorg/moody.nvim",
+        enabled = true,
         event = { "ModeChanged", "BufWinEnter", "WinEnter" },
         opts = {
             -- you can set different blend values for your different modes.
@@ -788,6 +889,22 @@ require("lazy").setup({
                 harpoon:list():select(4)
             end, { desc = "Open Fourth Harpooned File" })
 
+            vim.keymap.set("n", "<C-h>", function()
+                harpoon:list():select(1)
+            end, { desc = "Open First Harpooned File" })
+            vim.keymap.set("n", "<C-j>", function()
+                harpoon:list():select(2)
+            end, { desc = "Open Second Harpooned File" })
+            vim.keymap.set("n", "<C-k>", function()
+                harpoon:list():select(3)
+            end, { desc = "Open Third Harpooned File" })
+            vim.keymap.set("n", "<C-l>", function()
+                harpoon:list():select(4)
+            end, { desc = "Open Fourth Harpooned File" })
+            -- vim.keymap.set("n", "<C-`>", function()
+            --     harpoon:list():select(5)
+            -- end, { desc = "Open Fifth Harpooned File" })
+
             vim.keymap.set("n", "<leader>o1", function()
                 harpoon:list():select(1)
             end, { desc = "Open First Harpooned File" })
@@ -825,7 +942,7 @@ require("lazy").setup({
                 { desc = "Open harpoon window" })
         end,
         branch = "harpoon2",
-        dependencies = { "nvim-lua/plenary.nvim" }
+        dependencies = { "nvim-lua/plenary.nvim", }
     },
     {
         -- Adds git related signs to the gutter, as well as utilities for managing changes
@@ -969,6 +1086,10 @@ require("lazy").setup({
         end
     },
     {
+        'stevearc/dressing.nvim',
+        opts = {},
+    },
+    {
         "timofurrer/edelweiss",
         lazy = false,    -- make sure we load this during startup, because it's the main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
@@ -1049,7 +1170,8 @@ require("lazy").setup({
             options = {
                 icons_enabled = false,
                 -- theme = "tokyonight",
-                theme = "ayu",
+                -- theme = "ayu",
+                theme = "ayu-light",
                 component_separators = "|",
                 section_separators = "",
             },
@@ -1189,7 +1311,7 @@ vim.o.mouse = "a"
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = "unnamedplus"
+vim.o.clipboard = "unnamed"
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -1484,7 +1606,7 @@ local on_attach = function(_, bufnr)
 
     -- See `:help K` for why this keymap
     nmap("K", vim.lsp.buf.hover, "Hover Documentation")
-    nmap("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
+    nmap("<C-K>", vim.lsp.buf.signature_help, "Signature Documentation")
 
     -- Lesser used LSP functionality
     nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
@@ -1508,6 +1630,8 @@ require("which-key").add({
     { "<leader>c_", hidden = true },
     { "<leader>d",  group = "[D]ocument" },
     { "<leader>d_", hidden = true },
+    { "<leader>F",  group = "[F]ile Management" },
+    { "<leader>F_", hidden = true },
     { "<leader>f",  group = "[F]ile Management" },
     { "<leader>f_", hidden = true },
     { "<leader>g",  group = "[G]it" },
@@ -1703,6 +1827,7 @@ vim.keymap.set("n", "<C-?>", function()
     vim.notify(msg, level,
         { title = "File Diagnostics", render = "simple", timeout = diagTimeout, hide_from_history = true, animate = false })
 end, { desc = "Get all diagnostics in current file" })
+
 
 -- require("settings.theme")
 

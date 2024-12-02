@@ -28,14 +28,14 @@ wezterm.on('gui-attached', function(domain)
 	-- local tab3, _, _ = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '-i', '-c', '/opt/homebrew/bin/nvim ~/Dev/typst/ubc-typst' } }
 	-- local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '/Users/tfox/startnvimdev.sh' } }
 	-- local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/bin/zsh', '/Users/tfox/startnvimdev.sh' } }
-	local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/Users/tfox/startnvimdev.sh' } }
+	-- local tab4, _, window = main_window:spawn_tab { domain = { DomainName = domain:name() }, cwd = '/Users/tfox/dev', args = { '/Users/tfox/startnvimdev.sh' } }
 
 	-- activate the first tab
-	window:tabs()[1]:activate()
+	-- window:tabs()[1]:activate()
 	-- tab:set_title("nvim @ Dev")
 	-- tab2:set_title("nvim @ typst-ubc")
 	-- tab3:set_title("Test Zsh")
-	tab4:set_title("nvim @ ~/Dev")
+	-- tab4:set_title("nvim @ ~/Dev")
 end)
 
 -- local tab, pane, window = window:spawn_tab {}
@@ -55,6 +55,10 @@ config.cursor_blink_ease_in = 'Constant'
 config.cursor_blink_ease_out = 'Constant'
 config.cursor_thickness = 2
 
+-- config.front_end = "WebGpu"
+config.webgpu_power_preference = "HighPerformance"
+config.max_fps = 120
+
 config.enable_kitty_keyboard = true
 config.enable_csi_u_key_encoding = false
 config.hide_tab_bar_if_only_one_tab = true
@@ -72,7 +76,7 @@ config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
 
 -- Feeling SpaceMono
 -- config.font = wezterm.font "SpaceMono Nerd Font"
--- config.font_size = 13
+config.font_size = 16
 -- config.line_height = 0.8
 -- End
 
