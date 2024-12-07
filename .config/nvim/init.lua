@@ -20,8 +20,13 @@ vim.o.foldmethod = 'indent'
 vim.o.foldlevel = 99
 vim.o.foldenable = true
 -- vim.o.foldcolumn = '1'
+vim.diagnostic.config({ virtual_text = false })
 
 local transparent = false;
+
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", {
+    underdouble = true
+})
 
 if transparent then
     vim.api.nvim_create_autocmd({ "VimEnter" }, {
@@ -243,6 +248,20 @@ require("lazy").setup({
 
         }
     },
+    {
+        'rachartier/tiny-inline-diagnostic.nvim',
+        event = "VeryLazy",
+        priority = 1000,
+        config = function()
+            require('tiny-inline-diagnostic').setup({
+                -- preset = "classic",
+                preset = "powerline",
+                -- options = {
+                --     throttle = 0,
+                -- }
+            })
+        end
+    },
 
     -- I do not remember what this is...
     -- {
@@ -269,6 +288,13 @@ require("lazy").setup({
                     name = "Typst",
                 },
             },
+        }
+    },
+    {
+        'marcussimonsen/let-it-snow.nvim',
+        cmd = "LetItSnow",
+        opts = {
+            delay = 200
         }
     },
     {
@@ -492,6 +518,7 @@ require("lazy").setup({
 
             -- Additional lua configuration, makes nvim stuff amazing!
             -- NOTE: Maybe check this out a bit more...
+            -- TODO: Use lazydev instead.
             "folke/neodev.nvim",
         },
     },
@@ -507,6 +534,14 @@ require("lazy").setup({
                 mapping = cmp.mapping.preset.insert({
                     ["<Tab>"] = cmp.mapping.confirm({ select = true }),
                 }),
+                snippet = {
+                    expand = function(args)
+                        require 'snippy'.expand_snippet(args.body)
+                    end
+                },
+                sources = {
+                    { name = 'snippy' }
+                }
             })
         end,
         dependencies = {
@@ -517,6 +552,8 @@ require("lazy").setup({
             "hrsh7th/cmp-nvim-lsp",
             -- Adds a number of user-friendly snippets
             "rafamadriz/friendly-snippets",
+            -- 'dcampos/cmp-snippy',
+            -- 'dcampos/nvim-snippy'
         },
     },
 
@@ -573,16 +610,16 @@ require("lazy").setup({
                 lsp_fallback = true,
             },
             formatters_by_ft = {
-                css = { "prettierd" },
+                css = { "prettier" },
                 lua = { "stylua" },
                 typst = { "typstfmt" },
                 -- Conform will run multiple formatters sequentially
                 python = { "isort", "black" },
                 -- Use a sub-list to run only the first available formatter
-                javascript = { "prettierd" },
-                json = { "prettierd" },
-                typescript = { "prettierd" },
-                mdx = { "prettierd" },
+                javascript = { "prettier" },
+                json = { "prettier" },
+                typescript = { "prettier" },
+                mdx = { "prettier" },
                 markdown = { "prettier" },
             },
         },
@@ -753,60 +790,102 @@ require("lazy").setup({
             "rcarriga/nvim-notify",
         }
     },
-
-    {
-        "svampkorg/moody.nvim",
-        enabled = true,
-        event = { "ModeChanged", "BufWinEnter", "WinEnter" },
-        opts = {
-            -- you can set different blend values for your different modes.
-            -- Some colours might look better more dark, so set a higher value
-            -- will result in a darker shade.
-            blends = {
-                normal = 0.2,
-                insert = 0.2,
-                visual = 0.25,
-                command = 0.2,
-                operator = 0.2,
-                replace = 0.2,
-                select = 0.2,
-                terminal = 0.2,
-                terminal_n = 0.2,
-            },
-            -- there are two ways to define colours for the different modes.
-            -- one way is to define theme here in colors. Another way is to
-            -- set them up with highlight groups. Any highlight group set takes
-            -- precedence over any colours defined here.
-            colors = {
-                normal = "#00BFFF",
-                insert = "#70CF67",
-                visual = "#AD6FF7",
-                command = "#EB788B",
-                operator = "#FF8F40",
-                replace = "#E66767",
-                select = "#AD6FF7",
-                terminal = "#4CD4BD",
-                terminal_n = "#00BBCC",
-            },
-            -- disable filetypes here. Add for example "TelescopePrompt" to
-            -- not have any coloured cursorline for the telescope prompt.
-            disabled_filetypes = { "TelescopePrompt" },
-            -- you can turn on or off bold characters for the line numbers
-            bold_nr = true,
-            -- you can turn on and off a feature which shows a little icon and
-            -- registry number at the end of the CursorLine, for when you are
-            -- recording a macro! Default is false.
-            recording = {
-                enabled = false,
-                icon = "󰑋",
-                -- you can set some text to surround the recording registry char with
-                -- or just set one to empty to maybe have just one letter, an arrow
-                -- perhaps! For example recording to q, you could have! "󰑋    q" :D
-                pre_registry_text = "[",
-                post_registry_text = "]",
-            },
-        },
-    },
+    -- {
+    --     'sethen/line-number-change-mode.nvim',
+    --     config = function()
+    --         local palette = {
+    --             normal = "#00BFFF",
+    --             insert = "#70CF67",
+    --             visual = "#AD6FF7",
+    --             command = "#EB788B",
+    --             operator = "#FF8F40",
+    --             replace = "#E66767",
+    --             select = "#AD6FF7",
+    --             terminal = "#4CD4BD",
+    --             terminal_n = "#00BBCC",
+    --             none = "#00000000"
+    --         }
+    --
+    --         require("line-number-change-mode").setup({
+    --             mode = {
+    --                 i = {
+    --                     fg = palette.insert,
+    --                     bold = true,
+    --                 },
+    --                 n = {
+    --                     fg = palette.normal,
+    --                     bold = true,
+    --                 },
+    --                 R = {
+    --                     fg = palette.replace,
+    --                     bold = true,
+    --                 },
+    --                 v = {
+    --                     fg = palette.select,
+    --                     bold = true,
+    --                 },
+    --                 V = {
+    --                     bg = palette.select,
+    --                     bold = true,
+    --                 },
+    --             }
+    --         })
+    --     end
+    -- },
+    -- {
+    -- "svampkorg/moody.nvim",
+    -- enabled = true,
+    -- event = { "ModeChanged", "BufWinEnter", "WinEnter" },
+    -- opts = {
+    --     -- you can set different blend values for your different modes.
+    --     -- Some colours might look better more dark, so set a higher value
+    --     -- will result in a darker shade.
+    --     blends = {
+    --         normal = 0.2,
+    --         insert = 0.2,
+    --         visual = 0.25,
+    --         command = 0.2,
+    --         operator = 0.2,
+    --         replace = 0.2,
+    --         select = 0.2,
+    --         terminal = 0.2,
+    --         terminal_n = 0.2,
+    --     },
+    --     -- there are two ways to define colours for the different modes.
+    --     -- one way is to define theme here in colors. Another way is to
+    --     -- set them up with highlight groups. Any highlight group set takes
+    --     -- precedence over any colours defined here.
+    --     colors = {
+    --         normal = "#00BFFF",
+    --         insert = "#70CF67",
+    --         visual = "#AD6FF7",
+    --         command = "#EB788B",
+    --         operator = "#FF8F40",
+    --         replace = "#E66767",
+    --         select = "#AD6FF7",
+    --         terminal = "#4CD4BD",
+    --         terminal_n = "#00BBCC",
+    --     },
+    --     -- disable filetypes here. Add for example "TelescopePrompt" to
+    --     -- not have any coloured cursorline for the telescope prompt.
+    --     disabled_filetypes = { "TelescopePrompt" },
+    --     -- you can turn on or off bold characters for the line numbers
+    --     bold_nr = true,
+    --     -- you can turn on and off a feature which shows a little icon and
+    --     -- registry number at the end of the CursorLine, for when you are
+    --     -- recording a macro! Default is false.
+    --     recording = {
+    --         enabled = true,
+    --         -- icon = "󰑋",
+    --         icon = "q",
+    --         -- you can set some text to surround the recording registry char with
+    --         -- or just set one to empty to maybe have just one letter, an arrow
+    --         -- perhaps! For example recording to q, you could have! "󰑋    q" :D
+    --         pre_registry_text = "[",
+    --         post_registry_text = "]",
+    --     },
+    -- },
+    -- },
 
     -- Error list
     {
@@ -1034,6 +1113,7 @@ require("lazy").setup({
     },
 
     { "fffnite/gleam-theme-nvim" },
+    'Yazeed1s/oh-lucy.nvim',
 
     {
         "shatur/neovim-ayu",
@@ -1055,7 +1135,8 @@ require("lazy").setup({
     },
     { "kartikp10/noctis.nvim" },
     { "biscuit-colorscheme/nvim" },
-    { "rktjmp/lush.nvim" },
+    -- { "rktjmp/lush.nvim" },
+    -- use later to make a scheme
     { "fafa-a/anoukis" },
     { 'nyoom-engineering/oxocarbon.nvim' },
     {
@@ -1123,13 +1204,16 @@ require("lazy").setup({
                 "distinct",
                 "flexoki-dark",
                 "gleam",
+                "iceberg",
                 "kanagawa-dragon",
                 "kanagawa-wave",
                 "min-theme-dark",
-                "onedark",
                 "nightly",
                 "noctis",
                 "nordic",
+                "oh-lucy",
+                "oh-lucy-evening",
+                "onedark",
                 "oxocarbon",
                 "poimandres",
                 "spacechalk",
@@ -1188,7 +1272,7 @@ require("lazy").setup({
     },
 
     -- "gc" to comment visual regions/lines
-    { "numToStr/Comment.nvim", opts = {} },
+    -- { "numToStr/Comment.nvim", opts = {} },
 
     -- Fuzzy Finder (files, lsp, etc)
     {
