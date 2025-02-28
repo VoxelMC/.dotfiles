@@ -1,8 +1,9 @@
 hypr reference
 
-Window > Fullscreen Mode : Mod + f
+Window > Fullscreen Mode : Mod + Shift + f
          Pin to All Workspaces : Mod + y
          Drag and Drop : Mod + LMB
-		 Screenshot Mode : Mod + e (ESC to exit)
-		 Resize Mode : Mod + r (ESC to exit)
+	     Screenshot Mode : Mod + e (ESC to exit)
+	     Resize Mode : Mod + r (ESC to exit)
+         Toggle Floating : Mod + f
 

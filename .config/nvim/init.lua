@@ -506,6 +506,13 @@ require("lazy").setup({
                 filetypes = { "txt", "typ", "typst" },
                 init_options = { clientId = "client_BaDkMgx4X19X9UxxYRCXZo" }
             }
+            require("lspconfig").tailwindcss.setup {
+                settings = {
+                    tailwindCSS = {
+                        classAttributes = { "class", "className", "ngClass", "class:list", "hoverClass", "bgClass" }
+                    }
+                }
+            }
         end,
         dependencies = {
             -- Automatically install LSPs to stdpath for neovim
@@ -1192,11 +1199,21 @@ require("lazy").setup({
         priority = 1000,
     },
     {
+        "ficcdaf/ashen.nvim",
+        lazy = false,
+        priority = 1000,
+        -- configuration is optional!
+        opts = {
+            -- your settings here
+        },
+    },
+    {
         "zaldih/themery.nvim",
         opts = {
             themes = {
                 "ayu-dark",
                 "ayu-mirage",
+                "ashen",
                 "biscuit",
                 "catppuccin-frappe",
                 "catppuccin-macchiato",
