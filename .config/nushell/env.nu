@@ -108,11 +108,16 @@ path add /opt/homebrew/bin/nvim
 path add /opt/homebrew/bin/
 path add ($env.HOME | path join ".local" "bin")
 path add ($env.NUPM_HOME | path join "scripts")
-path add ($env.CARGO_HOME | path join "bin")
+# path add ($env.CARGO_HOME | path join "bin")
 path add /Users/tfox/Library/pnpm
 path add /Applications/Hyper.app/Contents/Resources/bin
-path add ($env.HOME | path join ".cargo" "env")
+# path add ($env.HOME | path join ".cargo" "env")
 path add /usr/local/go/bin
+path add /home/lc/.spicetify
+path add /home/linuxbrew/.linuxbrew/bin
+
+path add /home/lc/.nvm
+# path add /home/lc/.scripts
 
 # $env.PATH = ($env.PATH | uniq)
 
@@ -126,7 +131,8 @@ mkdir ~/.cache/starship
 starship init nu | save -f ~/.cache/starship/init.nu
 
 # Zoxide
-$env._ZO_DATA_DIR = "/Users/tfox/Library/Application Support/zoxide"
+# $env._ZO_DATA_DIR = "/Users/tfox/Library/Application Support/zoxide"
+$env._ZO_DATA_DIR = "/home/lc/.cache/.zoxide_data"
 zoxide init nushell --no-cmd | save -f ~/.cache/.zoxide.nu
 
 # Carapace

@@ -4,13 +4,16 @@ local mux = wezterm.mux
 -- This table will hold the configuration.
 local config = {}
 
+
 -- In newer versions of wezterm, use the config_builder which will
 -- help provide clearer error messages
 if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.default_cwd = 'Users/tfox/Dev'
+config.default_prog = { "/usr/bin/nu" }
+
+-- config.default_cwd = 'Users/tfox/Dev'
 -- This is where you actually apply your config choices
 wezterm.on('gui-attached', function(domain)
 	-- maximize all displayed windows on startup
@@ -38,7 +41,10 @@ wezterm.on('gui-attached', function(domain)
 	-- tab4:set_title("nvim @ ~/Dev")
 end)
 
+
 -- local tab, pane, window = window:spawn_tab {}
+config.enable_wayland = false
+config.window_background_opacity = 0.8
 
 -- config.initial_cols = 120
 -- config.initial_rows = 30
@@ -66,7 +72,7 @@ config.enable_csi_u_key_encoding = false
 config.hide_tab_bar_if_only_one_tab = true
 
 -- Feeling Monaspace
-config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
+-- config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
 -- config.font = wezterm.font "MonaspiceKr Nerd Font Mono"
 -- End
 
@@ -119,7 +125,7 @@ config.keys = {
 
 config.window_decorations = "TITLE | RESIZE"
 config.window_padding = {
-	left = 0,
+	left = "0.6cell",
 	right = 0,
 	top = "0.3cell",
 	bottom = 0,

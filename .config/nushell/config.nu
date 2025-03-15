@@ -28,6 +28,8 @@ def --env bako [] {
 
 alias gonupkg = cd ~/.cache/nuscripts/packages;
 
+alias h = cat ~/.cache/nuscripts/hypr_help.txt
+
 alias editnuenv = nvim ~/.config/nushell/env.nu;
 alias editstarship = nvim ~/.config/starship.toml;
 alias editnvim = nvim ~/.dotfiles/.config/nvim/init.lua;
@@ -35,11 +37,27 @@ alias editzsh = nvim ~/.zshrc;
 alias editwez = nvim ~/.wezterm.lua;
 alias editgit = nvim ~/.gitconfig;
 alias editrio = nvim ~/.config/rio/config.toml;
+alias edithypr = nvim ~/.config/hypr/hyprland.conf;
+alias editghost = nvim ~/.config/ghostty/config;
+alias pbcopy = xclip -sel clip;
+
+alias discup = aura -Sy discord;
+
+alias extip = curl https://ipecho.net/plain ; echo;
+def --env copyextip [] {
+	echo (curl https://ipecho.net/plain) | pbcopy;
+}
+
+if (lsb_release -i | str contains "cachyos") {
+	source ~/.cache/nuscripts/scripts/cachyos.nu
+}
 
 # Create aliases for git
 
 alias g = lazygit
 alias gcl = git clone
+
+alias xo = t-xo
 
 alias gs = git status
 alias ga = git add
@@ -228,9 +246,48 @@ let light_theme = {
 }
 
 # External completer example
-# let carapace_completer = {|spans|
-#     carapace $spans.0 nushell ...$spans | from json
-# }
+let carapace_completer = {|spans|
+    carapace $spans.0 nushell ...$spans 
+	| from json 
+	| if ($in | default [] | where value == $"($spans | last)ERR" | is-empty) { $in } else { null }
+}
+
+let zoxide_completer = {|spans|
+    $spans | skip 1 | zoxide query -l ...$in | lines | where {|x| $x != $env.PWD}
+}
+
+let fish_completer = {|spans|
+    fish --command $'complete "--do-complete=($spans | str join " ")"'
+    | from tsv --flexible --noheaders --no-infer
+    | rename value description
+}
+
+let external_completer = {|spans|
+    let expanded_alias = scope aliases
+    | where name == $spans.0
+    | get -i 0.expansion
+
+    let spans = if $expanded_alias != null {
+        $spans
+        | skip 1
+        | prepend ($expanded_alias | split row ' ' | take 1)
+    } else {
+        $spans
+    }
+
+    match $spans.0 {
+        # carapace completions are incorrect for nu
+        nu => $fish_completer
+        # fish completes commits and branch names in a nicer way
+        # git => $fish_completer
+        git => $fish_completer
+        # carapace doesn't have completions for asdf
+        asdf => $fish_completer
+        # use zoxide completions for zoxide commands
+        cd | __zoxide_z | __zoxide_zi => $zoxide_completer
+        _ => $carapace_completer
+    } | do $in $spans
+}
 
 # The default config record. This is where much of your global configuration is setup.
 $env.config = {
@@ -305,7 +362,7 @@ $env.config = {
         external: {
             enable: true # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up may be very slow
             max_results: 100 # setting it lower can improve completion performance at the cost of omitting some options
-            completer: null # check 'carapace_completer' above as an example
+            completer: $external_completer # check 'carapace_completer' above as an example
         }
         use_ls_colors: true # set this to true to enable file/path/directory completions using LS_COLORS
     }
