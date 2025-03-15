@@ -1,0 +1,8 @@
+command = nu
+
+# gtk-titlebar = false
+# window-decoration = false
+gtk-wide-tabs = false
+adw-toolbar-style = raised-border
+gtk-tabs-location = left
+window-padding-x = 4
