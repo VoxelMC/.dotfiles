@@ -36,10 +36,10 @@ if transparent then
         command = "highlight SignColumn guibg=NONE ctermbg=NONE"
     })
     -- Do the above green and below red!!
-    vim.api.nvim_create_autocmd({ "VimEnter" }, {
-        -- command = "highlight LineNr guifg=#CCCCCC ctermfg=#FFFFFF"
-        -- command = "highlight LineNr guifg=#CCCCCC"
-    })
+    -- vim.api.nvim_create_autocmd({ "VimEnter" }, {
+    --     -- command = "highlight LineNr guifg=#CCCCCC ctermfg=#FFFFFF"
+    --     -- command = "highlight LineNr guifg=#CCCCCC"
+    -- })
 end
 
 
@@ -685,6 +685,40 @@ require("lazy").setup({
         }
     },
 
+    -- {
+    --     "EggbertFluffle/beepboop.nvim",
+    --     opts = {
+    --         audio_player = "ffplay",
+    --         max_sounds = 20,
+    --         sound_directory = "~/.sounds",
+    --         sound_map = {
+    --             {
+    --                 auto_command = "InsertCharPre",
+    --                 sounds = {
+    --                     -- SOUND MAP DEFENITIONS HERE
+    --                     "banana-l-1.wav",
+    --                     "banana-l-2.wav",
+    --                     "banana-l-3.wav",
+    --                     "banana-l-4.wav",
+    --                     "banana-l-5.wav",
+    --                     "banana-l-6.wav",
+    --                     "banana-l-7.wav",
+    --                 }
+    --             }
+    --         }
+    --     }
+    -- },
+
+    -- {
+    --     'joshuadanpeterson/typewriter',
+    --     dependencies = {
+    --         'nvim-treesitter/nvim-treesitter',
+    --     },
+    --     config = function()
+    --         require('typewriter').setup()
+    --     end,
+    --     opts = {}
+    -- },
     {
         "folke/snacks.nvim",
         priority = 1000,
@@ -1239,6 +1273,7 @@ require("lazy").setup({
                 "tokyonight-storm",
                 "ayu-light",
                 "catppuccin-latte",
+                "everforest",
                 "edelweiss",
                 "paper",
                 "flexoki-light",
@@ -1252,6 +1287,16 @@ require("lazy").setup({
         }
     },
     {
+        "sainnhe/everforest",
+        priority = 1000,
+        config = function()
+            vim.g.everforest_background = "medium"
+            -- vim.cmd.colorscheme 'tokyonight-moon'
+            -- vim.cmd([[:colorscheme tokyonight-moon]])
+            -- vim.cmd([[:colorscheme flexoki-dark]])
+        end,
+    },
+    {
         -- Theme inspired by Atom
         "folke/tokyonight.nvim",
         priority = 1000,
@@ -1262,7 +1307,25 @@ require("lazy").setup({
         end,
     },
     "yorickpeterse/vim-paper",
-    "navarasu/onedark.nvim",
+    {
+        "navarasu/onedark.nvim",
+        opts = {
+            -- style = "deep",
+            transparent = true,
+            code_style = {
+                keywords = "bold,italic",
+                -- functions = "bold",
+            },
+            lualine = {
+                transparent = true
+            },
+            highlights = {
+                ["@keyword.import"] = { fmt = "italic,bold" },
+                ["@keyword.function"] = { fmt = "bold" },
+                ["@module"] = { fmt = "italic" }
+            }
+        }
+    },
     {
         -- Set lualine as statusline
         "nvim-lualine/lualine.nvim",
@@ -1272,7 +1335,8 @@ require("lazy").setup({
                 icons_enabled = false,
                 -- theme = "tokyonight",
                 -- theme = "ayu",
-                theme = "ayu-light",
+                -- theme = "ayu-light",
+                theme = "onedark",
                 component_separators = "|",
                 section_separators = "",
             },
@@ -1344,7 +1408,7 @@ require("lazy").setup({
     -- { import = 'custom.plugins' },
 }, {})
 
-require 'custom.lualine-custom'
+-- require 'custom.lualine-custom'
 
 
 
@@ -1929,6 +1993,7 @@ vim.keymap.set("n", "<C-?>", function()
         { title = "File Diagnostics", render = "simple", timeout = diagTimeout, hide_from_history = true, animate = false })
 end, { desc = "Get all diagnostics in current file" })
 
+require 'lualine'.setup { options = { theme = 'everforest' } }
 
 -- require("settings.theme")
 

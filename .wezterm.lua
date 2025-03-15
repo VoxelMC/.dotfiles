@@ -40,8 +40,10 @@ end)
 
 -- local tab, pane, window = window:spawn_tab {}
 
-config.initial_cols = 120
-config.initial_rows = 30
+-- config.initial_cols = 120
+-- config.initial_rows = 30
+
+-- config.tab_bar_at_bottom = true
 config.native_macos_fullscreen_mode = true
 -- For example, changing the color scheme:
 config.color_scheme = 'Tokyo Night'
@@ -72,6 +74,7 @@ config.font = wezterm.font "MonaspiceNe Nerd Font Mono"
 -- config.font = wezterm.font "JetBrainsMono Nerd Font"
 -- End
 
+-- config.font = wezterm.font "Liga Comic Mono"
 -- config.font = wezterm.font "Monaspace Neon" DONT USE
 
 -- Feeling SpaceMono
@@ -127,14 +130,17 @@ config.show_tab_index_in_tab_bar = false
 -- config.hide_tab_bar_if_only_one_tab = false
 
 -- BELOW IS TAB BAR CONFIGURATION
+--
+local button_bg = '#302042'
+local main_bg = '#0B0D14'
 
 config.colors = {
 	background = "0B0D14",
 	tab_bar = {
-		background = "#1a1b26",
-		-- background = "transparent",
+		-- background = "#1a1b26",
+		background = "transparent",
 		new_tab = {
-			bg_color = '#302042',
+			bg_color = button_bg,
 			fg_color = '#FFFFFF',
 
 			-- The same options that were listed under the `active_tab` section above
@@ -144,7 +150,8 @@ config.colors = {
 		-- You can configure some alternate styling when the mouse pointer
 		-- moves over the new tab button
 		new_tab_hover = {
-			bg_color = '#eb346e',
+			-- bg_color = '#eb346e',
+			bg_color = main_bg,
 			fg_color = '#FFFFFF',
 			italic = true,
 
@@ -168,11 +175,13 @@ function Tab_Title(tab_info)
 	local title = tab_info.tab_title
 	-- if the tab title is explicitly set, take that
 	if title and #title > 0 then
-		return tab_info.tab_index + 1 .. ": " .. title
+		-- return tab_info.tab_index + 1 .. ": " .. title
+		return title
 	end
 	-- Otherwise, use the title from the active pane
 	-- in that tab
-	return tab_info.tab_index + 1 .. ": " .. tab_info.active_pane.title
+	-- return tab_info.tab_index + 1 .. ": " .. tab_info.active_pane.title
+	return tab_info.active_pane.title
 end
 
 wezterm.on(
@@ -181,7 +190,8 @@ wezterm.on(
 		-- local edge_background = '#1a1b26'
 		local edge_background = 'transparent'
 		-- local background = '#3b2042'
-		local background = 'transparent'
+		-- local background = 'transparent'
+		local background = button_bg
 		-- local foreground = '#DDDDDD'
 		local foreground = '#DDDDDD'
 
