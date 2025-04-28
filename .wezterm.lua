@@ -47,6 +47,7 @@ end)
 config.native_macos_fullscreen_mode = true
 -- For example, changing the color scheme:
 config.color_scheme = 'Tokyo Night'
+-- config.color_scheme = 'Everforest Dark Soft (Gogh)'
 -- config.color_scheme = 'Panda (Gogh)'
 -- config.color_scheme = 'Tokyo Night (Gogh)'
 

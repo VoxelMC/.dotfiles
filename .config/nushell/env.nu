@@ -3,7 +3,7 @@
 # version = "0.99.1"
 
 def create_left_prompt [] {
-    let dir = match (do --ignore-shell-errors { $env.PWD | path relative-to $nu.home-path }) {
+    let dir = match (do --ignore-errors { $env.PWD | path relative-to $nu.home-path }) {
         null => $env.PWD
         '' => '~'
         $relative_pwd => ([~ $relative_pwd] | path join)
@@ -98,10 +98,6 @@ $env.NU_PLUGIN_DIRS = [
     ($nu.default-config-dir | path join 'plugins') # add <nushell-config-dir>/plugins
 ]
 
-# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-# $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-# An alternate way to add entries to $env.PATH is to use the custom command `path add`
-# which is built into the nushell stdlib:
 use std "path add"
 # $env.PATH = ($env.PATH | split row (char esep))
 path add /opt/homebrew/bin/nvim
@@ -113,6 +109,15 @@ path add /Users/tfox/Library/pnpm
 path add /Applications/Hyper.app/Contents/Resources/bin
 path add ($env.HOME | path join ".cargo" "env")
 path add /usr/local/go/bin
+path add /usr/local/share/dotnet
+path add /Users/tfox/.bun/bin
+path add "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+path add "/Users/tfox/.mix/escripts"
+
+# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
+# $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
+# An alternate way to add entries to $env.PATH is to use the custom command `path add`
+# which is built into the nushell stdlib:
 
 # $env.PATH = ($env.PATH | uniq)
 

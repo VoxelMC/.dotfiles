@@ -28,6 +28,7 @@ vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", {
     underdouble = true
 })
 
+
 if transparent then
     vim.api.nvim_create_autocmd({ "VimEnter" }, {
         command = "highlight Normal guibg=NONE ctermbg=NONE"
@@ -112,6 +113,43 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     end,
 })
 
+local themeList = {
+    "ayu-dark",
+    "ayu-mirage",
+    "ashen",
+    "biscuit",
+    "catppuccin-frappe",
+    "catppuccin-macchiato",
+    "catppuccin-mocha",
+    "distinct",
+    "flexoki-dark",
+    "gleam",
+    "iceberg",
+    "kanagawa-dragon",
+    "kanagawa-wave",
+    "min-theme-dark",
+    "nightly",
+    "noctis",
+    "nordic",
+    "oh-lucy",
+    "oh-lucy-evening",
+    "onedark",
+    "oxocarbon",
+    "poimandres",
+    "spacechalk",
+    "tokyonight-moon",
+    "tokyonight-night",
+    "tokyonight-storm",
+    "ayu-light",
+    "catppuccin-latte",
+    "everforest",
+    "edelweiss",
+    "paper",
+    "flexoki-light",
+    "kanagawa-lotus",
+    "one"
+}
+table.sort(themeList)
 -- No longer needed, but will keep in case I go back to Netrw from Oil (AS IF, LOL)
 -- if vim.fn.exists(":Rex") > 0 then
 --     -- Open netrw in pane
@@ -202,6 +240,13 @@ vim.opt.rtp:prepend(lazypath)
 
 -- [[ Configure plugins ]]
 require("lazy").setup({
+    {
+        "m4xshen/hardtime.nvim",
+        dependencies = { "MunifTanjim/nui.nvim" },
+        config = function()
+            require('hardtime').setup { disabled_filetypes = { "qf", "netrw", "NvimTree", "lazy", "mason", "oil" }, }
+        end,
+    },
     "virchau13/tree-sitter-astro",
     {
         "alvan/vim-closetag",
@@ -510,6 +555,20 @@ require("lazy").setup({
                 settings = {
                     tailwindCSS = {
                         classAttributes = { "class", "className", "ngClass", "class:list", "hoverClass", "bgClass" }
+                    }
+                }
+            }
+
+            require("lspconfig").jsonls.setup {
+                -- on_attach = on_attach,
+                settings = {
+                    json = {
+                        schemas = {
+                            {
+                                fileMatch = { 'package.json' },
+                                url = "https://json.schemastore.org/package.json"
+                            }
+                        }
                     }
                 }
             }
@@ -1176,7 +1235,7 @@ require("lazy").setup({
     },
     { "kartikp10/noctis.nvim" },
     { "biscuit-colorscheme/nvim" },
-    -- { "rktjmp/lush.nvim" },
+    { "rktjmp/lush.nvim" },
     -- use later to make a scheme
     { "fafa-a/anoukis" },
     { 'nyoom-engineering/oxocarbon.nvim' },
@@ -1244,42 +1303,7 @@ require("lazy").setup({
     {
         "zaldih/themery.nvim",
         opts = {
-            themes = {
-                "ayu-dark",
-                "ayu-mirage",
-                "ashen",
-                "biscuit",
-                "catppuccin-frappe",
-                "catppuccin-macchiato",
-                "catppuccin-mocha",
-                "distinct",
-                "flexoki-dark",
-                "gleam",
-                "iceberg",
-                "kanagawa-dragon",
-                "kanagawa-wave",
-                "min-theme-dark",
-                "nightly",
-                "noctis",
-                "nordic",
-                "oh-lucy",
-                "oh-lucy-evening",
-                "onedark",
-                "oxocarbon",
-                "poimandres",
-                "spacechalk",
-                "tokyonight-moon",
-                "tokyonight-night",
-                "tokyonight-storm",
-                "ayu-light",
-                "catppuccin-latte",
-                "everforest",
-                "edelweiss",
-                "paper",
-                "flexoki-light",
-                "kanagawa-lotus",
-                "one"
-            },
+            themes = themeList,
             -- Your list of installed colorschemes
             -- Described below
             livePreview = true,
@@ -1291,6 +1315,9 @@ require("lazy").setup({
         priority = 1000,
         config = function()
             vim.g.everforest_background = "medium"
+            vim.g.everforest_ui_contrast = "high"
+            vim.g.everforest_diagnostic_text_highlight = 1
+            vim.g.everforest_enable_italic = 1
             -- vim.cmd.colorscheme 'tokyonight-moon'
             -- vim.cmd([[:colorscheme tokyonight-moon]])
             -- vim.cmd([[:colorscheme flexoki-dark]])
@@ -1761,6 +1788,7 @@ local on_attach = function(_, bufnr)
 
     nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
     nmap("<leader>c.", vim.lsp.buf.code_action, "[C]ode [A]ction")
+    nmap("<C-.>", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
     nmap("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
     nmap("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
@@ -1992,6 +2020,7 @@ vim.keymap.set("n", "<C-?>", function()
     vim.notify(msg, level,
         { title = "File Diagnostics", render = "simple", timeout = diagTimeout, hide_from_history = true, animate = false })
 end, { desc = "Get all diagnostics in current file" })
+
 
 require 'lualine'.setup { options = { theme = 'everforest' } }
 
